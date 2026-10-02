@@ -58,7 +58,7 @@ public class Game implements IGame
 		}
 	}
 
-	private static void printBoardShots(List<IMove> moves, char[][] map) {
+	public static void printBoardShots(List<IMove> moves, char[][] map) {
 		for (IMove move : moves)
 			for (IPosition shot : move.getShots()) {
 				if (shot.isInside()){
