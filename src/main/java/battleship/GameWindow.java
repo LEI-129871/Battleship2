@@ -129,7 +129,6 @@ public class GameWindow {
                     case SHIP_ADJACENT_MARKER -> labelsMap[i][j].setBackground(Color.decode("#173B52"));
 
                     default -> {
-                        if(map[i][j] != '.') System.out.println("MERDA");
                         labelsMap[i][j].setBackground(new Color(31, 78, 107));
                         labelsMap[i][j].setText("");
                     }
@@ -138,10 +137,33 @@ public class GameWindow {
         }
     }
 
+    private void checkwin(){
+        if(game.getRemainingShips() > 0) return;
+
+        String[] opcoes = {"Novo Jogo", "Fechar"};
+        int escolha = JOptionPane.showOptionDialog(frame,
+                "Fim do Jogo em " + game.getAlienMoves().size() + " Rajadas", "Fim",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+                null, opcoes, opcoes[0]);
+
+        if (escolha == 0){
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+                    map[i][j] = EMPTY_MARKER;
+                }
+            }
+            gerada = false;
+            myFleet = new Fleet();
+            game = null;
+            updateBoard();
+        }
+        else System.exit(0);
+    }
+
     private void addComponentsMenu(){
 
         // Estetica geraFrota
-        JButton geraFrota = botaoNeon("Gerar Frota", "#BC13FE", "#FFFFFF");
+        JButton geraFrota = botaoNeon("Gerar Frota","#BC13FE", "#FFFFFF");
         geraFrota.addActionListener(e->{
             if(gerada) return;
             myFleet = Fleet.createRandom();
@@ -176,8 +198,9 @@ public class GameWindow {
                         "focusedBorderColor: #00F0FF;" +
                         "margin: 4,12,4,12;");
 
-        JButton rajada    = botaoNeon("Rajada",      "#FF5C00", "#FFFFFF");
+        JButton rajada = botaoNeon("Rajada","#FF5C00", "#FFFFFF");
         rajada.addActionListener(e->{
+            if(game== null || fieldRajada.getText().isEmpty()) return;
             Scanner in = new Scanner(fieldRajada.getText());
             try {
                 game.readEnemyFire(in);
@@ -185,15 +208,24 @@ public class GameWindow {
             catch (IllegalArgumentException i){
                 JOptionPane.showMessageDialog(frame, i.getMessage(),
                         "ERRO na Rajada", JOptionPane.INFORMATION_MESSAGE);
-            }
+            }Game.printBoardShots(game.getAlienMoves(),map);
             in.close();
 
             Game.printBoardShots(game.getAlienMoves(),map);
 
             updateBoard();
+            checkwin();
+        });
+        JButton rajadaRandom = botaoNeon("Rajada Aleatoria", "#39FF14", "#FFFFFF");
+        rajadaRandom.addActionListener(e->{
+            if(game== null) return;
+            game.randomEnemyFire();
+            Game.printBoardShots(game.getAlienMoves(),map);
+            updateBoard();
+            checkwin();
         });
 
-        JButton desistir  = botaoNeon("Desistir",    "#FF073A", "#FF073A");
+        JButton desistir  = botaoNeon("Desistir","#FF073A", "#FF073A");
         desistir.addActionListener(e->{
             String[] opcoes = {"Reiniciar", "Fechar"};
             int escolha = JOptionPane.showOptionDialog(frame,
@@ -208,15 +240,18 @@ public class GameWindow {
                     }
                 }
                 gerada = false;
+                myFleet = new Fleet();
+                game = null;
                 updateBoard();
             }
-            else if (escolha == 1) System.exit(0);
+            else System.exit(0);
         });
 
-        menu.add(geraFrota, "h 50!, gapbottom 72, gaptop 30");
+        menu.add(geraFrota, "h 50!, gapbottom 47, gaptop 30");
         menu.add(fieldRajada, "h 75!");
         menu.add(rajada,"h 50!");
-        menu.add(desistir, "h 50!,gaptop 72");
+        menu.add(rajadaRandom,"h 50!");
+        menu.add(desistir, "h 50!,gaptop 47");
     }
 
     public static void main(String[] args) {

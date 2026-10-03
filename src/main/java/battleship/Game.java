@@ -220,6 +220,7 @@ public class Game implements IGame
 	 * @throws RuntimeException if there is an error during the JSON serialization of the shots.
 	 */
 	public String randomEnemyFire() {
+		System.out.println("Teste");
 
 		// Criar uma instância de Random com uma seed baseada no timestamp atual
 		Random random = new Random(System.currentTimeMillis());
