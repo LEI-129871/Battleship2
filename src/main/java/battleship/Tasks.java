@@ -46,7 +46,6 @@ public class Tasks {
 		Scanner in = new Scanner(System.in);
 		String command = in.next();
 		while (!command.equals(DESISTIR)) {
-
 			switch (command) {
 				case GERAFROTA:
 					myFleet = Fleet.createRandom();

@@ -43,7 +43,7 @@
         .intro {
             text-align: center;
             color: white;
-            margin-top: 2%;
+            margin-top: 1%;
             border: 2px solid #00f0ff;
             border-radius: 30px;
             width: 90%;
@@ -70,7 +70,7 @@
         }
 
         form {
-            margin-top: 30px;
+            margin-top: 15px;
             width: 90%;
             max-width: 700px;
             display: flex;
@@ -237,6 +237,48 @@
             </div>
             <button type="submit">RAJADA</button>
         </form>
+
+        <div class="output">
+
+        </div>
     </div>
+    <script>
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const resultadoRaw = urlParams.get('result');
+
+            if (resultadoRaw) {
+                setTimeout(() => {
+                    const resultadoDecoded = decodeURIComponent(resultadoRaw);
+                    const tiros = resultadoDecoded.split('|').filter(t => t.trim() !== '');
+
+                    let mensagem = "";
+
+                    tiros.forEach(tiro => {
+                        const partes = tiro.split(',');
+
+                        if (partes[0] === "null") {
+                            const posicao = partes[1] ? partes[1] : "";
+                            mensagem += "🌊 Tiro " + posicao + " na água!\n";
+                        } else {
+                            const posicao = partes[0];
+                            const barco = partes[1];
+                            const afundou = partes[2];
+
+                            if (afundou === "true") {
+                                mensagem += "💥 ACERTOU na " + barco + " em " + posicao + " e AFUNDOU! 🔥\n";
+                            } else {
+                                mensagem += "🎯 ACERTOU na " + barco + " em " + posicao + "!\n";
+                            }
+                        }
+                    });
+
+                    alert(mensagem);
+
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }, 50);
+            }
+        });
+    </script>
 </body>
 </html>

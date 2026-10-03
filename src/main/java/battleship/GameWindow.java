@@ -25,6 +25,17 @@ public class GameWindow {
     private JPanel menu;
     private IFleet myFleet;
     private IGame game;
+    private JTextField fieldRajada;
+    private JButton rajada;
+
+    public JButton getRajada() {
+        return rajada;
+    }
+
+    public JTextField getFieldRajada() {
+        return fieldRajada;
+    }
+
     private char[][] map = new char[BOARD_SIZE][BOARD_SIZE];
     private JLabel[][] labelsMap = new JLabel[BOARD_SIZE][BOARD_SIZE];
     private boolean gerada = false;
@@ -126,7 +137,13 @@ public class GameWindow {
                         labelsMap[i][j].setHorizontalAlignment(0);
                         labelsMap[i][j].setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 20));
                     }
-                    case SHIP_ADJACENT_MARKER -> labelsMap[i][j].setBackground(Color.decode("#173B52"));
+                    case SHIP_ADJACENT_MARKER -> {
+                        labelsMap[i][j].setBackground(Color.decode("#173B52"));
+                        labelsMap[i][j].setForeground(Color.decode("#BFE3F5"));
+                        labelsMap[i][j].setText("•");
+                        labelsMap[i][j].setHorizontalAlignment(0);
+                        labelsMap[i][j].setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 20));
+                    }
 
                     default -> {
                         labelsMap[i][j].setBackground(new Color(31, 78, 107));
@@ -184,7 +201,7 @@ public class GameWindow {
 
         });
 
-        JTextField fieldRajada = new JTextField();
+        fieldRajada = new JTextField();
         fieldRajada.setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 15));
         fieldRajada.setHorizontalAlignment(JTextField.CENTER);
         fieldRajada.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "ex: A1 A2 A3");
@@ -198,7 +215,7 @@ public class GameWindow {
                         "focusedBorderColor: #00F0FF;" +
                         "margin: 4,12,4,12;");
 
-        JButton rajada = botaoNeon("Rajada","#FF5C00", "#FFFFFF");
+        rajada = botaoNeon("Rajada","#FF5C00", "#FFFFFF");
         rajada.addActionListener(e->{
             if(game== null || fieldRajada.getText().isEmpty()) return;
             Scanner in = new Scanner(fieldRajada.getText());
@@ -252,6 +269,23 @@ public class GameWindow {
         menu.add(rajada,"h 50!");
         menu.add(rajadaRandom,"h 50!");
         menu.add(desistir, "h 50!,gaptop 47");
+    }
+
+    public String shotsResult(){
+        StringBuilder aux = new StringBuilder();
+        String sep = "|";
+        for (int i = 0; i < 3; i++) {
+            IGame.ShotResult shot = game.getAlienMoves().getLast().getShotResults().get(i);
+            IPosition pos = game.getAlienMoves().getLast().getShots().get(i);
+            if (shot.ship() == null) {
+                aux.append("null").append(",").append(pos.toString()).append(sep);
+            }
+            else {
+                String out = shot.ship().toString().split("\\[")[1];
+                aux.append(out.split(" ")[0]).append(",").append(pos.toString()).append(",").append(shot.sunk()).append(sep);
+            }
+        }
+        return aux.toString();
     }
 
     public static void main(String[] args) {
