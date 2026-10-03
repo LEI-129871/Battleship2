@@ -58,7 +58,7 @@ public class Game implements IGame
 		}
 	}
 
-	private static void printBoardShots(List<IMove> moves, char[][] map) {
+	public static void printBoardShots(List<IMove> moves, char[][] map) {
 		for (IMove move : moves)
 			for (IPosition shot : move.getShots()) {
 				if (shot.isInside()){
@@ -220,6 +220,7 @@ public class Game implements IGame
 	 * @throws RuntimeException if there is an error during the JSON serialization of the shots.
 	 */
 	public String randomEnemyFire() {
+		System.out.println("Teste");
 
 		// Criar uma instância de Random com uma seed baseada no timestamp atual
 		Random random = new Random(System.currentTimeMillis());
