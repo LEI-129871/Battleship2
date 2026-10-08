@@ -59,6 +59,11 @@ public class GameWindow {
     /** Instância do motor de jogo que gere o estado da partida. */
     private IGame game;
 
+    /** Getter do Game **/
+    public IGame getGame() {
+        return game;
+    }
+
     /** Campo de texto para inserção das coordenadas dos tiros da rajada. */
     private JTextField fieldRajada;
 
@@ -357,28 +362,6 @@ public class GameWindow {
         menu.add(desistir, "h 50!,gaptop 47");
     }
 
-    /**
-     * Formata os resultados da última rajada efetuada numa String delimitada por pipe ({@code |}),
-     * adequada para envio como parâmetro HTTP para o cliente web.
-     *
-     * @return Uma String contendo os resultados e posições de cada tiro da última rajada.
-     */
-    public String shotsResult(){
-        StringBuilder aux = new StringBuilder();
-        String sep = "|";
-        for (int i = 0; i < 3; i++) {
-            IGame.ShotResult shot = game.getAlienMoves().getLast().getShotResults().get(i);
-            IPosition pos = game.getAlienMoves().getLast().getShots().get(i);
-            if (shot.ship() == null) {
-                aux.append("null").append(",").append(pos.toString()).append(sep);
-            }
-            else {
-                String out = shot.ship().toString().split("\\[")[1];
-                aux.append(out.split(" ")[0]).append(",").append(pos.toString()).append(",").append(shot.sunk()).append(sep);
-            }
-        }
-        return aux.toString();
-    }
 
     /**
      * Ponto de entrada principal para execução autónoma da interface gráfica.
