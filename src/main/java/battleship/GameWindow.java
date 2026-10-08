@@ -10,36 +10,92 @@ import java.awt.*;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Representa a interface gráfica principal (GUI) do jogo Batalha Naval, desenvolvida em Swing.
+ * <p>
+ * Esta classe é responsável pela renderização do tabuleiro tático 10x10, gestão dos elementos visuais
+ * (com estilo escuro e botões neon via FlatLaf), interação com a frota e processamento
+ * dos disparos (rajadas) efetuados tanto na GUI como recebidos a partir do servidor web.
+ * </p>
+ *
+ * @author Diogo [129869]
+ * @version 1.0
+ */
 public class GameWindow {
 
+    /** Dimensão da grelha do tabuleiro (10x10). */
     private static final int BOARD_SIZE = 10;
+
+    /** Marcador visual de navio totalmente destruído. */
     private static final char SHIP_DEAD = 'C';
+
+    /** Marcador visual de posição ocupada por um navio. */
     private static final char SHIP_MARKER = '#';
+
+    /** Marcador visual de tiro certeiro num navio. */
     private static final char SHOT_SHIP_MARKER = '*';
+
+    /** Marcador visual de tiro na água. */
     private static final char SHOT_WATER_MARKER = 'o';
+
+    /** Marcador visual de posição adjacente a um navio afundado. */
     private static final char SHIP_ADJACENT_MARKER = '-';
+
+    /** Marcador visual de célula vazia/não atingida. */
     private static final char EMPTY_MARKER = '.';
 
+    /** Janela principal da aplicação. */
     private JFrame frame;
+
+    /** Painel correspondente à grelha do tabuleiro de jogo. */
     private JPanel tabuleiro;
+
+    /** Painel lateral contendo o menu de controlos e ações. */
     private JPanel menu;
+
+    /** A frota de navios ativa do jogador. */
     private IFleet myFleet;
+
+    /** Instância do motor de jogo que gere o estado da partida. */
     private IGame game;
+
+    /** Campo de texto para inserção das coordenadas dos tiros da rajada. */
     private JTextField fieldRajada;
+
+    /** Botão para acionar a submissão da rajada de tiros. */
     private JButton rajada;
 
+    /**
+     * Obtém a referência para o botão de disparo de rajada.
+     *
+     * @return O componente {@link JButton} associado ao disparo.
+     */
     public JButton getRajada() {
         return rajada;
     }
 
+    /**
+     * Obtém a referência para o campo de texto de inserção da rajada.
+     *
+     * @return O componente {@link JTextField} do campo de rajada.
+     */
     public JTextField getFieldRajada() {
         return fieldRajada;
     }
 
+    /** Matriz bidimensional que guarda o estado lógico de cada célula do tabuleiro. */
     private char[][] map = new char[BOARD_SIZE][BOARD_SIZE];
+
+    /** Matriz de rótulos visuais (labels) para a representação gráfica do tabuleiro. */
     private JLabel[][] labelsMap = new JLabel[BOARD_SIZE][BOARD_SIZE];
+
+    /** Indica se a frota atual já foi gerada e colocada no tabuleiro. */
     private boolean gerada = false;
 
+    /**
+     * Constrói a janela do jogo, inicializa os LookAndFeel personalizados (FlatLaf),
+     * define as configurações de temas, dimensões e monta os componentes do tabuleiro e menu.
+     */
     public GameWindow(){
         FlatLightLaf.setup();
         FlatJetBrainsMonoFont.install();
@@ -63,16 +119,21 @@ public class GameWindow {
         addComponentsTabuleiro();
         addComponentsMenu();
 
-
         frame.add(tabuleiro, BorderLayout.CENTER);
         frame.add(menu,BorderLayout.EAST);
     }
 
+    /**
+     * Centra a janela no ecrã e torna-a visível, dando início à interface do jogo.
+     */
     public void start(){
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
+    /**
+     * Cria e inicializa as 100 células (JLabels) que constituem a grelha visual do tabuleiro 10x10.
+     */
     private void addComponentsTabuleiro(){
         for (int i = 0; i < 100; i++) {
             JLabel label = new JLabel("");
@@ -83,6 +144,14 @@ public class GameWindow {
         }
     }
 
+    /**
+     * Método auxiliar para instanciar e estilizar um {@link JButton} com estética Neon personalizada.
+     *
+     * @param texto O texto a ser exibido no botão.
+     * @param corBorda A cor da borda do botão em formato Hexadecimal (ex: "#BC13FE").
+     * @param corTexto A cor do texto em formato Hexadecimal.
+     * @return O botão configurado com os estilos visuais aplicados.
+     */
     private JButton botaoNeon(String texto, String corBorda, String corTexto) {
         JButton b = new JButton(texto);
         b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -102,6 +171,10 @@ public class GameWindow {
         return b;
     }
 
+    /**
+     * Atualiza a representação gráfica do tabuleiro no ecrã com base na matriz lógica
+     * e no estado atual dos navios da frota (tiros na água, acertos e navios afundados).
+     */
     private void updateBoard(){
         for (IShip ship : myFleet.getShips()) {
             if (!ship.stillFloating()) {
@@ -154,6 +227,10 @@ public class GameWindow {
         }
     }
 
+    /**
+     * Verifica se a partida terminou (todos os navios afundados). Em caso afirmativo,
+     * exibe uma caixa de diálogo informando o fim do jogo e permite reiniciar a partida ou sair.
+     */
     private void checkwin(){
         if(game.getRemainingShips() > 0) return;
 
@@ -177,9 +254,13 @@ public class GameWindow {
         else System.exit(0);
     }
 
+    /**
+     * Cria e adiciona todos os componentes ao painel lateral do menu,
+     * incluindo botões de controlo, campo de texto e respetivos listeners de eventos.
+     */
     private void addComponentsMenu(){
 
-        // Estetica geraFrota
+        // Botão para gerar frota aleatória
         JButton geraFrota = botaoNeon("Gerar Frota","#BC13FE", "#FFFFFF");
         geraFrota.addActionListener(e->{
             if(gerada) return;
@@ -201,6 +282,7 @@ public class GameWindow {
 
         });
 
+        // Campo de texto para introdução da rajada
         fieldRajada = new JTextField();
         fieldRajada.setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 15));
         fieldRajada.setHorizontalAlignment(JTextField.CENTER);
@@ -215,6 +297,7 @@ public class GameWindow {
                         "focusedBorderColor: #00F0FF;" +
                         "margin: 4,12,4,12;");
 
+        // Botão para submeter a rajada
         rajada = botaoNeon("Rajada","#FF5C00", "#FFFFFF");
         rajada.addActionListener(e->{
             if(game== null || fieldRajada.getText().isEmpty()) return;
@@ -233,6 +316,8 @@ public class GameWindow {
             updateBoard();
             checkwin();
         });
+
+        // Botão para disparar uma rajada aleatória
         JButton rajadaRandom = botaoNeon("Rajada Aleatoria", "#39FF14", "#FFFFFF");
         rajadaRandom.addActionListener(e->{
             if(game== null) return;
@@ -242,6 +327,7 @@ public class GameWindow {
             checkwin();
         });
 
+        // Botão para desistir da partida
         JButton desistir  = botaoNeon("Desistir","#FF073A", "#FF073A");
         desistir.addActionListener(e->{
             String[] opcoes = {"Reiniciar", "Fechar"};
@@ -271,6 +357,12 @@ public class GameWindow {
         menu.add(desistir, "h 50!,gaptop 47");
     }
 
+    /**
+     * Formata os resultados da última rajada efetuada numa String delimitada por pipe ({@code |}),
+     * adequada para envio como parâmetro HTTP para o cliente web.
+     *
+     * @return Uma String contendo os resultados e posições de cada tiro da última rajada.
+     */
     public String shotsResult(){
         StringBuilder aux = new StringBuilder();
         String sep = "|";
@@ -288,6 +380,11 @@ public class GameWindow {
         return aux.toString();
     }
 
+    /**
+     * Ponto de entrada principal para execução autónoma da interface gráfica.
+     *
+     * @param args Argumentos da linha de comandos (não utilizados).
+     */
     public static void main(String[] args) {
         GameWindow g = new GameWindow();
         g.start();
