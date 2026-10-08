@@ -33,6 +33,8 @@ public interface IGame
 	 */
 	void fireShots(List<IPosition> shots);
 
+	String shotsResult();
+
 	record ShotResult(boolean valid, boolean repeated, IShip ship, boolean sunk) {}
 
 	/**

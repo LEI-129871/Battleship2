@@ -453,4 +453,27 @@ public class Game implements IGame
 			System.out.println("| Maldito sejas, Java Sparrow, eu voltarei, glub glub glub ... |");
 			System.out.println("+--------------------------------------------------------------+");
 	}
+
+	/**
+	 * Formata os resultados da última rajada efetuada numa String delimitada por pipe ({@code |}),
+	 * adequada para envio como parâmetro HTTP para o cliente web.
+	 *
+	 * @return Uma String contendo os resultados e posições de cada tiro da última rajada.
+	 */
+	public String shotsResult(){
+		StringBuilder aux = new StringBuilder();
+		String sep = "|";
+		for (int i = 0; i < 3; i++) {
+			IGame.ShotResult shot = this.getAlienMoves().getLast().getShotResults().get(i);
+			IPosition pos = this.getAlienMoves().getLast().getShots().get(i);
+			if (shot.ship() == null) {
+				aux.append("null").append(",").append(pos.toString()).append(sep);
+			}
+			else {
+				String out = shot.ship().toString().split("\\[")[1];
+				aux.append(out.split(" ")[0]).append(",").append(pos.toString()).append(",").append(shot.sunk()).append(sep);
+			}
+		}
+		return aux.toString();
+	}
 }
