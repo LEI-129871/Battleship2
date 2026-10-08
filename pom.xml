@@ -157,6 +157,14 @@
 			<version>2.304</version>
 			<scope>compile</scope>
 		</dependency>
+
+		<!-- Source: https://mvnrepository.com/artifact/io.javalin/javalin -->
+		<dependency>
+			<groupId>io.javalin</groupId>
+			<artifactId>javalin</artifactId>
+			<version>7.2.3</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -185,7 +193,12 @@
 							<createDependencyReducedPom>false</createDependencyReducedPom>
 							<transformers>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>restserver.BattleshipServer</mainClass>
+									<!--restserver.BattleshipServer-->
+									<mainClass>battleship.Main</mainClass>
+									<!-- TIRAR ISTO NA PARTE II PROVAVELMENTE -->
+									<manifestEntries>
+										<Multi-Release>true</Multi-Release>
+									</manifestEntries>
 								</transformer>
 							</transformers>
 						</configuration>

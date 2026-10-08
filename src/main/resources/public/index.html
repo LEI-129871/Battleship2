@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
+    <title>BattleShip II</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(#172030, #1F4E6B) fixed;
+        }
+
+        .topbar {
+            background-color: #172030;
+            margin: 0;
+            color: white;
+            border-bottom: 2px solid #00f0ff;
+            height: 60px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bungee', sans-serif;
+        }
+
+        .topbar h2 {
+            margin: 20px;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 16px 40px;
+        }
+
+        .intro {
+            text-align: center;
+            color: white;
+            margin-top: 1%;
+            border: 2px solid #00f0ff;
+            border-radius: 30px;
+            width: 90%;
+            max-width: 700px;
+            padding: 10px 24px;
+            box-sizing: border-box;
+            background-color: #172030;
+            font-family: Cormorant Garamond;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .intro:hover{
+            transform: scale(1.02);
+            box-shadow: 0 0 12px #2e85ff;
+        }
+
+        .texto-WOW {
+            font-family: 'Bungee', sans-serif;
+            color: #09679a;
+            font-size: 1.3rem;
+            margin-bottom: 0;
+        }
+
+        form {
+            margin-top: 15px;
+            width: 90%;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .tiros {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            width: 90px;
+            height: 55px;
+            box-sizing: border-box;
+            text-align: center;
+            text-transform: uppercase;
+            font-family: monospace;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: white;
+            background-color: #0F1A2B;
+            border: 2px solid #4380d6;
+            border-radius: 16px;
+            outline: none;
+            transition: box-shadow 0.2s;
+        }
+
+        input[type="text"]::placeholder {
+            color: #5B6B85;
+            font-weight: normal;
+        }
+
+        input[type="text"]:focus {
+            box-shadow: 0 0 12px #2e85ff;
+        }
+
+        button {
+            background-color: #172030;
+            color: white;
+            font-family: 'Bungee', sans-serif;
+            font-size: 1.1rem;
+            padding: 12px 40px;
+            border-radius: 16px;
+            border: 2px solid #FF5C00;
+            cursor: pointer;
+            transition: box-shadow 0.2s, background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #26344D;
+            box-shadow: 0 0 14px #ff2200;
+        }
+
+        .topbar, .main {
+            position: relative;
+            z-index: 1;
+        }
+
+        .mar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            overflow: hidden;
+            pointer-events: none;   
+            z-index: 0;
+        }
+
+        .onda {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: calc(100% + var(--w));
+            background-repeat: repeat-x;
+            background-size: var(--w) 100%;
+            animation: andar var(--t) linear infinite;
+        }
+
+        @keyframes andar {
+            to { transform: translateX(calc(-1 * var(--w))); }
+        }
+
+        .onda1 {
+            --w: 1600px; --t: 32s;
+            height: 110px;
+            opacity: 0.30;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath fill='%232A8FAE' d='M0,60 C150,10 350,110 600,60 C850,10 1050,110 1200,60 L1200,120 L0,120 Z'/%3E%3C/svg%3E");
+        }
+
+        .onda2 {
+            --w: 1200px; --t: 22s;
+            height: 85px;
+            opacity: 0.50;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath fill='%231F7A9A' d='M0,60 C150,10 350,110 600,60 C850,10 1050,110 1200,60 L1200,120 L0,120 Z'/%3E%3C/svg%3E");
+        }
+
+        .onda3 {
+            --w: 800px; --t: 14s;
+            height: 60px;
+            opacity: 0.90;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath fill='%23173B52' d='M0,60 C150,10 350,110 600,60 C850,10 1050,110 1200,60 L1200,120 L0,120 Z'/%3E%3C/svg%3E");
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .onda { animation: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="mar">
+        <div class="onda onda1"></div>
+        <div class="onda onda2"></div>
+        <div class="onda onda3"></div>
+    </div>
+    <div class="topbar">
+        <h2>[+]&nbsp;&nbsp;&nbsp;BattleShip II&nbsp;&nbsp;&nbsp;[+]</h2>
+    </div>
+
+    <div class="main">
+        <div class="intro">
+            <p class="texto">
+            Bem-vindo ao jogo BattleShip II, desenvolvido pelo grupo 5 <br>
+            constituído por Diogo Gonçalves, David Sousa e Martim Almeida. <br>
+            Nesta página podes, a partir do botão em baixo, realizar uma
+            </p>
+            <p class="texto-WOW">RAJADA</p>
+            <p class="texto">
+                sendo esta de três tiros contra a frota escondida no outro lado do tabuleiro. <br>
+                Escreve as três posições (por exemplo <b>A1 A2 A3</b>), carrega em disparar e descobre o que acertaste.
+            </p>
+
+            <p class="texto-WOW">A FROTA</p>
+            <p class="texto">
+                Inspirada nos Descobrimentos Portugueses, cada frota tem 11 navios: <br>
+                4 barcas, 3 caravelas, 2 naus, 1 fragata e 1 galeão. <br>
+                Os navios nunca se tocam, nem sequer na diagonal, por isso a água à volta de um navio afundado é sempre segura.
+            </p>
+
+            <p class="texto-WOW">A RESPOSTA</p>
+            <p class="texto">
+                Depois de cada rajada recebes um relatório com os tiros válidos, os navios afundados, <br>
+                os acertos, os tiros na água, os repetidos e os que caíram fora do tabuleiro. <br>
+                Não vês a frota inimiga: só sabes o que a tua memória e o teu diário de bordo registarem.
+            </p>
+
+            <p class="texto-WOW">BOA SORTE</p>
+            <p class="texto">
+                Quando todos os navios tiverem a fazer GLU GLU o jogo acaba!
+            </p>
+            <p class="texto-WOW">Bons ventos, capitão!</p>
+        </div>
+
+        <form action="/rajada" method="post">
+            <div class="tiros">
+                <input type="text" name="tiro" placeholder="A1" maxlength="3" required autocomplete="off">
+                <input type="text" name="tiro" placeholder="B5" maxlength="3" required autocomplete="off">
+                <input type="text" name="tiro" placeholder="C7" maxlength="3" required autocomplete="off">
+            </div>
+            <button type="submit">RAJADA</button>
+        </form>
+
+        <div class="output">
+
+        </div>
+    </div>
+    <script>
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const resultadoRaw = urlParams.get('result');
+
+            if (resultadoRaw) {
+                setTimeout(() => {
+                    const resultadoDecoded = decodeURIComponent(resultadoRaw);
+                    const tiros = resultadoDecoded.split('|').filter(t => t.trim() !== '');
+
+                    let mensagem = "";
+
+                    tiros.forEach(tiro => {
+                        const partes = tiro.split(',');
+
+                        if (partes[0] === "null") {
+                            const posicao = partes[1] ? partes[1] : "";
+                            mensagem += "🌊 Tiro " + posicao + " na água!\n";
+                        } else {
+                            const posicao = partes[0];
+                            const barco = partes[1];
+                            const afundou = partes[2];
+
+                            if (afundou === "true") {
+                                mensagem += "💥 ACERTOU na " + barco + " em " + posicao + " e AFUNDOU! 🔥\n";
+                            } else {
+                                mensagem += "🎯 ACERTOU na " + barco + " em " + posicao + "!\n";
+                            }
+                        }
+                    });
+
+                    alert(mensagem);
+
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }, 50);
+            }
+        });
+    </script>
+</body>
+</html>
