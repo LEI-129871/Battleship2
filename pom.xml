@@ -165,6 +165,14 @@
 			<version>7.2.3</version>
 			<scope>compile</scope>
 		</dependency>
+
+		<!-- Source: https://mvnrepository.com/artifact/org.netbeans.external/org-apache-commons-lang3 -->
+		<dependency>
+			<groupId>org.netbeans.external</groupId>
+			<artifactId>org-apache-commons-lang3</artifactId>
+			<version>RELEASE310</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

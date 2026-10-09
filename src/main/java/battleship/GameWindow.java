@@ -97,6 +97,7 @@ public class GameWindow {
     /** Indica se a frota atual já foi gerada e colocada no tabuleiro. */
     private boolean gerada = false;
 
+    private Time t;
     /**
      * Constrói a janela do jogo, inicializa os LookAndFeel personalizados (FlatLaf),
      * define as configurações de temas, dimensões e monta os componentes do tabuleiro e menu.
@@ -126,6 +127,9 @@ public class GameWindow {
 
         frame.add(tabuleiro, BorderLayout.CENTER);
         frame.add(menu,BorderLayout.EAST);
+
+        t = new Time(frame, 30);
+        t.start();
     }
 
     /**
@@ -306,6 +310,7 @@ public class GameWindow {
         rajada = botaoNeon("Rajada","#FF5C00", "#FFFFFF");
         rajada.addActionListener(e->{
             if(game== null || fieldRajada.getText().isEmpty()) return;
+            t.reiniciar();
             Scanner in = new Scanner(fieldRajada.getText());
             try {
                 game.readEnemyFire(in);
@@ -326,6 +331,7 @@ public class GameWindow {
         JButton rajadaRandom = botaoNeon("Rajada Aleatoria", "#39FF14", "#FFFFFF");
         rajadaRandom.addActionListener(e->{
             if(game== null) return;
+            t.reiniciar();
             game.randomEnemyFire();
             Game.printBoardShots(game.getAlienMoves(),map);
             updateBoard();
