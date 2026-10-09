@@ -72,30 +72,44 @@ public class Move implements IMove {
 		Map<String, Integer> sunkBoatsCount = new HashMap<>(); // Rastrear quantos navios de cada tipo afundaram
 		Map<String, Integer> hitsPerBoat = new HashMap<>();
 
-		// Processar cada resultado de tiro
-		for (IGame.ShotResult result : this.shotResults) {
-			if (!result.valid()) {
-				// Tiro inválido - apenas ignorar
-				continue;
-			}
+        // Processar cada resultado de tiro
+        for (IGame.ShotResult result : this.shotResults) {
+            if (!result.valid()) {
+                // Tiro inválido - apenas ignorar
+                continue;
+            }
 
-			if (result.repeated())
-				repeatedShots++; // tiro repetido
-			else {
-				// Tiro válido
-				validShots++;
-				if (result.ship() == null)
-					missedShots++; // Tiro na água
-				else{
-					String boatName = result.ship().getCategory();
-					hitsPerBoat.put(boatName, hitsPerBoat.getOrDefault(boatName, 0) + 1);
-					if (result.sunk())
-						sunkBoatsCount.put(boatName, sunkBoatsCount.getOrDefault(boatName, 0) + 1); // Contar barcos do mesmo tipo afundados
-				}
-			}
-		}
+            if (result.repeated()) {
+                repeatedShots++; // Tiro repetido
+            } else {
+                // Tiro válido
+                validShots++;
 
-		// Determinar número de tiros fora do tabuleiro
+                if (result.ship() == null) {
+                    missedShots++; // Tiro na água
+                    SoundPlayer.playSound("Agua.mp3");
+
+                } else {
+                    String boatName = result.ship().getCategory();
+                    hitsPerBoat.put(boatName,
+                            hitsPerBoat.getOrDefault(boatName, 0) + 1);
+
+                    if (result.sunk()) {
+                        // Navio afundado
+                        sunkBoatsCount.put(boatName,
+                                sunkBoatsCount.getOrDefault(boatName, 0) + 1);
+
+                        SoundPlayer.playSound("NavioAfundado.mp3");
+
+                    } else {
+                        // Navio atingido, mas não afundado
+                        SoundPlayer.playSound("NavioAtingido.mp3");
+                    }
+                }
+            }
+        }
+
+        // Determinar número de tiros fora do tabuleiro
 		int outsideShots = Game.NUMBER_SHOTS - validShots - repeatedShots;
 
 		if (verbose) {

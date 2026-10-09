@@ -166,6 +166,12 @@
 			<scope>compile</scope>
 		</dependency>
 
+        <dependency>
+            <groupId>com.googlecode.soundlibs</groupId>
+            <artifactId>jlayer</artifactId>
+            <version>1.0.1.4</version>
+        </dependency>
+
 		<!-- Source: https://mvnrepository.com/artifact/org.netbeans.external/org-apache-commons-lang3 -->
 		<dependency>
 			<groupId>org.netbeans.external</groupId>
