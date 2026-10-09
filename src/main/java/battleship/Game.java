@@ -341,6 +341,9 @@ public class Game implements IGame
 			throw new IllegalArgumentException("Must fire exactly " + NUMBER_SHOTS + " shots per move.");
 		}
 
+        // Reproduzir o som dos 3 disparos antes dos resultados
+        SoundPlayer.playVolley();
+
 		List<IPosition> alreadyShot = new ArrayList<IPosition>();
 		for (IPosition pos : shots) {
 			shotResults.add(fireSingleShot(pos, alreadyShot.contains(pos)));

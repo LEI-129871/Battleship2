@@ -66,19 +66,23 @@ public class Tasks {
 					if (myFleet != null)
 						game.printMyBoard(false, true);
 					break;
-				case RAJADA:
-					if (game != null) {
-						game.readEnemyFire(in);
-						myFleet.printStatus();
-						game.printMyBoard(true, false);
+                case RAJADA:
+                    if (game != null) {
 
-						if (game.getRemainingShips() == 0) {
-							game.over();
-							System.exit(0);
-						}
-					}
-					break;
-				case SIMULA:
+                        // Executar a rajada
+                        game.readEnemyFire(in);
+
+                        myFleet.printStatus();
+                        game.printMyBoard(true, false);
+
+                        if (game.getRemainingShips() == 0) {
+                            game.over();
+                            SoundPlayer.waitForSounds(); // Esperar que todos os efeitos sonoros terminem
+                            System.exit(0);
+                        }
+                    }
+                    break;
+                case SIMULA:
 					if (game != null) {
 						while (game.getRemainingShips() > 0){
 							game.randomEnemyFire();
