@@ -192,6 +192,13 @@ Rajada 2: B6 F2 H9 -> hitsOnBoats [{"hits":1,"type":"Nau"}], missedShots 2 -> G1
 Rajada 3: um vizinho de cada candidato (B7, F3, H10) para descobrir qual deles pertence à Nau.
 RAJADA: B7 F3 H10
 ```
+## 📺 Video
+
+<p align="center">
+  <a href="https://youtu.be/ZZS21foHUTg">
+    <img src="https://img.shields.io/badge/Ver%20no%20YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Assista ao Vídeo">
+  </a>
+</p>
 
 ## 🤝 Contributing
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create.
