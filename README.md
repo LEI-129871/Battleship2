@@ -135,49 +135,62 @@ mvn test
 ## 🤖 AI Prompt
 
 ```
-Considere agora a seguinte tática. Vai jogar num papel: ataca a frota do jogador com rajadas de 3 tiros, diferente da batalha naval tradicional onde ha duas frotas.
+Considere agora a seguinte tática. Vai jogar num papel: ataca a frota do jogador com rajadas de 3 tiros. Só existe uma frota (a do jogador).
 
-1. FORMATO DAS MENSAGENS
-- As suas rajadas são sempre um array de coordenadass com exatamente 3 tiros, por exemplo:
-  [A5,C10,F5]
-  "row" é uma letra maiúscula de A a J e "column" um número de 1 a 10.
-- Em cada turno de ataque responda por esta ordem: (a) o Diário de Bordo atualizado e (b) um único array com as rajadas. Não escreva mais nada.
+1. TABULEIRO E NAVIOS
+- Tabuleiro 10x10: linhas A a J, colunas 1 a 10.
+- Frota (11 navios): 4 Barcas (1 posição), 3 Caravelas (2), 2 Naus (3), 1 Fragata (4), 1 Galeao (5).
+- Barca, Caravela, Nau e Fragata são linhas retas, na horizontal ou na vertical.
+- O Galeao tem forma de T: um corpo de 3 posições em linha e, numa das extremidades, uma posição adicional de cada lado (as "asas"). Tem 4 orientações (braço do T virado a Norte, Sul, Este ou Oeste). Exemplo com o braço a Norte: B4, B5, B6 (asas e centro) e C5, D5 (restante corpo).
+- Os navios nunca se tocam, nem nos cantos (diagonais), mas podem encostar às margens do tabuleiro.
+- Consequência: à volta de cada navio há sempre um halo de 1 posição (incluindo diagonais) que é água.
 
-2. COMO LER O RELATÓRIO DE UMA RAJADA
-- Os 3 tiros dividem-se em: validShots + repeatedShots + outsideShots = 3.
-- Dentro dos tiros válidos: os que afundaram um navio (sunkBoats), os acertos em navios que continuam a flutuar (hitsOnBoats) e os tiros na água (missedShots).
+2. FORMATO DAS MENSAGENS
+- Em cada turno escreva, por esta ordem: (a) o Diário de Bordo atualizado, curto, e (b) a última linha, exatamente neste formato:
+  RAJADA: A5 C10 F5
+- A rajada tem exatamente 3 coordenadas distintas (letra de A a J seguida de número de 1 a 10), separadas por espaços. Não escreva mais nada depois desta linha.
+
+3. COMO LER O RELATÓRIO DE UMA RAJADA
+- validShots + repeatedShots + outsideShots = 3.
+- Dentro dos válidos: afundados (sunkBoats), acertos em navios que continuam a flutuar (hitsOnBoats) e água (missedShots).
 - O relatório NÃO diz que tiro fez o quê. Se missedShots = 3, as três posições são água certa. Se os 3 tiros foram acertos ou afundamentos, as três são navio. Nos outros casos, registe um grupo ambíguo, por exemplo: "G1: 1 acerto em Nau entre {B6, F2, H9}". Nunca decida ao acaso qual dos tiros acertou.
-- Resolva os grupos ambíguos por eliminação: dispare nas posições contíguas dos candidatos; um candidato fica confirmado quando um vizinho também acerta, ou quando os restantes do grupo ficam descartados. O tipo e o tamanho do navio também ajudam (Barca 1, Caravela 2, Nau 3, Fragata 4, Galeao 5).
+- Resolva os grupos ambíguos por eliminação: dispare nas posições contíguas dos candidatos; um candidato fica confirmado quando um vizinho também acerta, ou quando os restantes do grupo ficam descartados.
+- O campo "type" diz de que navio se trata. Use-o e use a contagem de navios que ainda flutuam: se já não restam Caravelas, um acerto novo nunca é Caravela.
 
-3. DIÁRIO DE BORDO (atualize-o em cada rajada)
+4. DIÁRIO DE BORDO (atualize em cada rajada)
 - Rajada N: os 3 tiros, o resumo do relatório e as deduções (certezas e grupos ambíguos).
-- Mapa 10x10 com estes símbolos: "." desconhecido, "~" água certa, "?" candidato a acerto, "X" acerto confirmado, "#" navio afundado.
+- Mapa 10x10: "." desconhecido, "~" água certa, "?" candidato a acerto, "X" acerto confirmado, "#" navio afundado.
 - Navios por afundar, por tipo (começa com 1 Galeao, 1 Fragata, 2 Naus, 3 Caravelas, 4 Barcas).
-- Só marca "~" ou "#" quando tiver certeza. Quando não tiver, use "?".
+- Só marque "~" ou "#" com certeza. Se não tiver, use "?".
 
-4. REGRAS DE DISPARO
-- Nunca dispare fora do mapa, nem numa posição já disparada, nem em água certa. Única exceção: quando restarem menos de 3 posições úteis, complete a rajada com posições repetidas.
+5. REGRAS DE DISPARO
+- Nunca dispare fora do mapa, numa posição já disparada, nem em água certa.
+- Única exceção: a última rajada do jogo, quando todos os navios já estiverem afundados, só para perfazer os 3 tiros.
 - Prioridade: (1) acabar de afundar os navios atingidos, (2) resolver grupos ambíguos, (3) procurar novos navios.
-- Se um acerto está confirmado, dispare nas posições contíguas (Norte, Sul, Este, Oeste). Com dois acertos alinhados, continue pela linha, nas duas extremidades. Se tiver menos de 3 alvos úteis, complete com tiros de procura.
-- Navios nunca se tocam, nem nos cantos: as diagonais de um acerto são água certa. Exceção: o Galeao tem forma de T, por isso, se os acertos formarem um L ou um T, uma diagonal pode ser navio.
-- Procura: dispare em xadrez (linha + coluna par), com os 3 tiros afastados entre si, porque os navios de 2 ou mais posições ocupam sempre uma casa de cada cor. Quando só restarem Barcas (1 posição), varra as posições desconhecidas que sobram.
+- Se um acerto está confirmado, dispare nas posições contíguas (N, S, E, O). Com dois acertos alinhados, continue pela linha nas duas extremidades. Se um extremo for água, vá ao extremo oposto. Se tiver menos de 3 alvos úteis, complete com tiros de procura.
+- Diagonais: se o navio atingido for Barca, Caravela, Nau ou Fragata, as diagonais dos acertos são água certa. Se for Galeao (ou o tipo for ambíguo e o Galeao ainda flutuar), NÃO marque diagonais como água, porque no T uma diagonal pode ser navio.
+- Galeao: se tiver 3 acertos em linha, pode ser o corpo ou o braço do T; teste as posições laterais numa das extremidades para encontrar as asas. Descarte as orientações incompatíveis com a água já conhecida ou com as margens.
+- Procura: dispare em xadrez, com A=1, B=2, ..., J=10, escolhendo posições em que (linha + coluna) é par, e com os 3 tiros afastados entre si. Prefira posições onde caiba pelo menos um navio que ainda flutue. Quando só restarem Barcas, varra as posições desconhecidas que sobram, incluindo as de paridade ímpar.
 
-5. NAVIO AFUNDADO
-- Quando o relatório indicar um afundamento, use o tamanho do navio e o Diário para identificar exatamente as posições que o formam, e marque-as "#".
-- Só então marque as posições adjacentes (o halo de 1 posição em redor, incluindo as diagonais) como água certa "~". Se ainda houver ambiguidade sobre as posições do navio, marque apenas o que é certo.
+6. NAVIO AFUNDADO
+- Use o tamanho do navio e o Diário para identificar as posições que o formam e marque-as "#".
+- Só então marque o halo de 1 posição em redor (incluindo diagonais) como "~". Se ainda houver ambiguidade sobre as posições do navio, marque apenas o que é certo.
 
-6. ANTES DE ENVIAR UMA RAJADA, CONFIRME
-- Tem 3 posições distintas, com letras A a J e números de 1 a 10.
-- Nenhuma foi disparada antes nem está marcada "~" ou "#" (salvo a exceção da última rajada).
+7. ANTES DE ENVIAR, CONFIRME
+- 3 posições distintas, com letras A a J e números de 1 a 10.
+- Nenhuma foi disparada antes nem está marcada "~" ou "#".
 - O Diário e o mapa estão atualizados com o último relatório.
+- A última linha da resposta é "RAJADA: ..." no formato indicado.
 
-7. FIM DO JOGO
-- Se for a frota inimiga, seja um vencedor magnânimo.
+8. FIM DO JOGO
+- Quando não restar nenhum navio por afundar, seja um vencedor magnânimo e não envie mais rajadas.
+- Se a sua frota for afundada, declare a derrota com honra.
 
 EXEMPLO
-Rajada 1: [A1, C4, E8] -> missedShots 3 -> as três posições são água certa "~".
-Rajada 2: [B6, F2, H9] -> hitsOnBoats [{"hits":1,"type":"Nau"}], missedShots 2 -> G1: 1 acerto em Nau entre {B6, F2, H9}. Ainda não sabe qual.
-Rajada 3: um vizinho de cada candidato, B7, F3 e H10, para descobrir qual deles pertence à Nau.
+Rajada 1: A1 C4 E8 -> missedShots 3 -> as três posições são água certa "~".
+Rajada 2: B6 F2 H9 -> hitsOnBoats [{"hits":1,"type":"Nau"}], missedShots 2 -> G1: 1 acerto em Nau entre {B6, F2, H9}. Ainda não sabe qual.
+Rajada 3: um vizinho de cada candidato (B7, F3, H10) para descobrir qual deles pertence à Nau.
+RAJADA: B7 F3 H10
 ```
 
 ## 🤝 Contributing
