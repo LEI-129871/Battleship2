@@ -5,6 +5,12 @@ projectJDK: "21"
 
 profile:
   name: empty
+  inspections:
+    - inspection: NonCommentSourceStatements
+      enabled: true
+      options:
+        m_limit: 65
+
 failureConditions:
   severityThresholds:
     any: 0
