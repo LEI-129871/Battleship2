@@ -1,0 +1,17 @@
+# 129869 - Diogo Gonçalves
+name: Checkstyle gate 129869
+on:
+  pull_request:
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  checkstyle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dbelyaev/action-checkstyle@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          checkstyle_config: checkstyle-129869.xml
+          fail_level: error
