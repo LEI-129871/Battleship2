@@ -10,6 +10,16 @@ profile:
       enabled: true
       options:
         m_limit: 65
+        
+    - inspection: CyclomaticComplexity
+      enabled: true
+      options:
+        m_limit: 3
+
+    - inspection: NestingDepth
+      enabled: true
+      options:
+        m_limit: 2
 
 failureConditions:
   severityThresholds:
