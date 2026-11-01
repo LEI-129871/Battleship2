@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 0
       - uses: JetBrains/qodana-action@v2026.2
         with:
-          args: --config qodana-129869.yaml --property project.open.type=Maven
+          args: --config qodana-129869.yaml, --property project.open.type=Maven
           use-caches: false
           use-annotations: true
           post-pr-comment: true
