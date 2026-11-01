@@ -5,20 +5,20 @@ projectJDK: "21"
 properties:
   project.open.type: Maven
 profile:
-  name: empty
+  base:
+    name: empty
   inspections:
     - inspection: NonCommentSourceStatements
       enabled: true
       options:
         m_limit: 65
+
     - inspection: CyclomaticComplexity
       enabled: true
       options:
         m_limit: 3
+
     - inspection: NestingDepth
       enabled: true
       options:
         m_limit: 2
-failureConditions:
-  severityThresholds:
-    any: 0
