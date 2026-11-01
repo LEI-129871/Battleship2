@@ -22,3 +22,4 @@ jobs:
           args: --config qodana-129869.yaml --property project.open.type=Maven
           use-annotations: true
           post-pr-comment: true
+          upload-result: true
