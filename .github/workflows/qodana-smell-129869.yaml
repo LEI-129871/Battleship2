@@ -3,7 +3,7 @@ name: Qodana smell gate 129869
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
 permissions:
   contents: read
