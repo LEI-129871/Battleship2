@@ -221,14 +221,13 @@ The workflow is triggered on:
 The workflow executes the following command:
 
 ```bash
-mvn -B clean verify
+mvn -B package --file pom.xml
 ```
 
-This command compiles the project and executes
-the unit tests.
+This command compiles the project, executes the unit tests
+and packages the application.
 
-The workflow results can be viewed in the
-GitHub Actions tab of this repository.
+The workflow results can be viewed in the GitHub Actions tab.
 
 ---
 
