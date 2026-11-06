@@ -200,6 +200,38 @@ RAJADA: B7 F3 H10
   </a>
 </p>
 
+---
+
+## Continuous Integration (CI)
+
+This project uses GitHub Actions to automatically
+build the Java application and execute unit tests.
+
+The workflow is triggered on:
+- Every push to any branch.
+- Pull Requests targeting the main branch.
+
+### Environment
+- Java 21 (Eclipse Temurin)
+- Apache Maven
+- JUnit 6
+
+### Build and Test
+
+The workflow executes the following command:
+
+```bash
+mvn -B clean verify
+```
+
+This command compiles the project and executes
+the unit tests.
+
+The workflow results can be viewed in the
+GitHub Actions tab of this repository.
+
+---
+
 ## 🤝 Contributing
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create.
 
