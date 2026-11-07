@@ -24,7 +24,7 @@ public class SoundPlayer {
                                  "/sounds/" + fileName)) {
 
                 if (sound == null) {
-                    System.out.println("Som não encontrado: " + fileName);
+                    System.err.println("Som não encontrado: " + fileName);
                     return;
                 }
 
@@ -33,7 +33,7 @@ public class SoundPlayer {
                 player.close();
 
             } catch (Exception e) {
-                System.out.println("Erro ao reproduzir som: "
+                System.err.println("Erro ao reproduzir som: "
                         + e.getMessage());
             }
         });
