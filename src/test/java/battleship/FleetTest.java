@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mockStatic;
 
 /**
  * Test class for class Fleet.
- * Author: ${user.name}
+ * Author: 129869
  * Date: 2026-11-07
  * Cyclomatic Complexity (assert statements are not counted as decisions):
  * - constructor: 1
@@ -39,13 +39,6 @@ import static org.mockito.Mockito.mockStatic;
  * - printShipsByCategory(): 1
  * - printFloatingShips(): 1
  * - printAllShips(): 1
- *
- * Notes:
- * - Tests named *Null() verify the `assert x != null` guards and need assertions enabled (-ea,
- *   which is Maven Surefire's default). They are skipped automatically otherwise.
- * - createRandom2()/createRandom3() use Mockito static mocking (mockito-core 5+).
- * - Assumes a 10x10 board and that Position(int, int) / Barge / Caravel behave as in your
- *   previous FleetTest.
  */
 class FleetTest {
 

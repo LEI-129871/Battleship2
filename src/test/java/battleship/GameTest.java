@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 
 /**
  * Test class for class Game.
- * Author: ${user.name}
+ * Author: 129869
  * Date: 2026-11-07
  * Cyclomatic Complexity (assert statements and lambdas without decisions are not counted):
  * - constructor: 1
@@ -40,16 +40,6 @@ import static org.mockito.Mockito.*;
  * - repeatedShot(): 3          (for, if)
  * - printMyBoard(), printAlienBoard(), over(): 1 each
  * - shotsResult(): 3           (for, if)
- *
- * Notes:
- * - *Null() tests check the `assert x != null` guards and are skipped when assertions (-ea) are off.
- * - printBoardFrame() has only constant-bound loops, so all its tests follow the same control-flow
- *   path; they are split by the section of the output they verify.
- * - randomEnemyFire2()/randomEnemyFire4() use Mockito construction mocking of java.util.Random to
- *   force the "duplicate pick" branches; jsonShots3() mocks ObjectMapper to force the catch branch.
- * - Assumes IGame.ShotResult is record ShotResult(boolean valid, boolean repeated, IShip ship, boolean sunk),
- *   Position(int row, int col) / Position(char, int), value-based equals/hashCode on Position, and a
- *   10x10 board.
  */
 class GameTest {
 

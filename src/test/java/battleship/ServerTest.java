@@ -21,19 +21,13 @@ import static org.mockito.Mockito.*;
 
 /**
  * Test class for class Server.
- * Author: ${user.name}
+ * Author: 129869
  * Date: 2026-11-07
  * Cyclomatic Complexity:
  * - constructor (default): 1
  * - run(): 6  (handler lambda included: for formParams, if isCli, if Tasks.game == null,
  *              for split, if gw.getGame() == null)
  * - stop(): 2
- *
- * Assumptions (adjust if your project differs):
- * - Mockito 5+ (mockito-core) is on the test classpath (inline mocking for GameWindow).
- * - Tasks.game is a non-final static field of type IGame.
- * - IGame.shotsResult() returns a String.
- * - GameWindow.getFieldRajada() returns a JTextField and getRajada() returns a JButton.
  */
 class ServerTest {
 
