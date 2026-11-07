@@ -1,0 +1,497 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > GameWindow</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">battleship</a>
+</div>
+
+<h1>Coverage Summary for Class: GameWindow (battleship)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GameWindow</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/51)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/148)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package battleship;
+&nbsp;
+&nbsp;import com.formdev.flatlaf.FlatClientProperties;
+&nbsp;import com.formdev.flatlaf.FlatLightLaf;
+&nbsp;import com.formdev.flatlaf.fonts.jetbrains_mono.FlatJetBrainsMonoFont;
+&nbsp;import net.miginfocom.swing.MigLayout;
+&nbsp;
+&nbsp;import javax.swing.*;
+&nbsp;import java.awt.*;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Scanner;
+&nbsp;
+&nbsp;/**
+&nbsp; * Representa a interface gráfica principal (GUI) do jogo Batalha Naval, desenvolvida em Swing.
+&nbsp; * &lt;p&gt;
+&nbsp; * Esta classe é responsável pela renderização do tabuleiro tático 10x10, gestão dos elementos visuais
+&nbsp; * (com estilo escuro e botões neon via FlatLaf), interação com a frota e processamento
+&nbsp; * dos disparos (rajadas) efetuados tanto na GUI como recebidos a partir do servidor web.
+&nbsp; * &lt;/p&gt;
+&nbsp; *
+&nbsp; * @author Diogo [129869]
+&nbsp; * @version 1.0
+&nbsp; */
+&nbsp;public class GameWindow {
+&nbsp;
+&nbsp;    /** Dimensão da grelha do tabuleiro (10x10). */
+&nbsp;    private static final int BOARD_SIZE = 10;
+&nbsp;
+&nbsp;    /** Marcador visual de navio totalmente destruído. */
+&nbsp;    private static final char SHIP_DEAD = &#39;C&#39;;
+&nbsp;
+&nbsp;    /** Marcador visual de posição ocupada por um navio. */
+&nbsp;    private static final char SHIP_MARKER = &#39;#&#39;;
+&nbsp;
+&nbsp;    /** Marcador visual de tiro certeiro num navio. */
+&nbsp;    private static final char SHOT_SHIP_MARKER = &#39;*&#39;;
+&nbsp;
+&nbsp;    /** Marcador visual de tiro na água. */
+&nbsp;    private static final char SHOT_WATER_MARKER = &#39;o&#39;;
+&nbsp;
+&nbsp;    /** Marcador visual de posição adjacente a um navio afundado. */
+&nbsp;    private static final char SHIP_ADJACENT_MARKER = &#39;-&#39;;
+&nbsp;
+&nbsp;    /** Marcador visual de célula vazia/não atingida. */
+&nbsp;    private static final char EMPTY_MARKER = &#39;.&#39;;
+&nbsp;
+&nbsp;    /** Janela principal da aplicação. */
+&nbsp;    private JFrame frame;
+&nbsp;
+&nbsp;    /** Painel correspondente à grelha do tabuleiro de jogo. */
+&nbsp;    private JPanel tabuleiro;
+&nbsp;
+&nbsp;    /** Painel lateral contendo o menu de controlos e ações. */
+&nbsp;    private JPanel menu;
+&nbsp;
+&nbsp;    /** A frota de navios ativa do jogador. */
+&nbsp;    private IFleet myFleet;
+&nbsp;
+&nbsp;    /** Instância do motor de jogo que gere o estado da partida. */
+&nbsp;    private IGame game;
+&nbsp;
+&nbsp;    /** Getter do Game **/
+&nbsp;    public IGame getGame() {
+<b class="nc">&nbsp;        return game;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /** Campo de texto para inserção das coordenadas dos tiros da rajada. */
+&nbsp;    private JTextField fieldRajada;
+&nbsp;
+&nbsp;    /** Botão para acionar a submissão da rajada de tiros. */
+&nbsp;    private JButton rajada;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Obtém a referência para o botão de disparo de rajada.
+&nbsp;     *
+&nbsp;     * @return O componente {@link JButton} associado ao disparo.
+&nbsp;     */
+&nbsp;    public JButton getRajada() {
+<b class="nc">&nbsp;        return rajada;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Obtém a referência para o campo de texto de inserção da rajada.
+&nbsp;     *
+&nbsp;     * @return O componente {@link JTextField} do campo de rajada.
+&nbsp;     */
+&nbsp;    public JTextField getFieldRajada() {
+<b class="nc">&nbsp;        return fieldRajada;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /** Matriz bidimensional que guarda o estado lógico de cada célula do tabuleiro. */
+<b class="nc">&nbsp;    private char[][] map = new char[BOARD_SIZE][BOARD_SIZE];</b>
+&nbsp;
+&nbsp;    /** Matriz de rótulos visuais (labels) para a representação gráfica do tabuleiro. */
+<b class="nc">&nbsp;    private JLabel[][] labelsMap = new JLabel[BOARD_SIZE][BOARD_SIZE];</b>
+&nbsp;
+&nbsp;    /** Indica se a frota atual já foi gerada e colocada no tabuleiro. */
+<b class="nc">&nbsp;    private boolean gerada = false;</b>
+&nbsp;
+&nbsp;    private Time t;
+&nbsp;    /**
+&nbsp;     * Constrói a janela do jogo, inicializa os LookAndFeel personalizados (FlatLaf),
+&nbsp;     * define as configurações de temas, dimensões e monta os componentes do tabuleiro e menu.
+&nbsp;     */
+<b class="nc">&nbsp;    public GameWindow(){</b>
+<b class="nc">&nbsp;        FlatLightLaf.setup();</b>
+<b class="nc">&nbsp;        FlatJetBrainsMonoFont.install();</b>
+<b class="nc">&nbsp;        UIManager.put(&quot;OptionPane.background&quot;, Color.decode(&quot;#0F0F0F&quot;));</b>
+<b class="nc">&nbsp;        UIManager.put(&quot;Panel.background&quot;, Color.decode(&quot;#0F2A38&quot;));</b>
+<b class="nc">&nbsp;        UIManager.put(&quot;OptionPane.messageForeground&quot;, Color.WHITE);</b>
+<b class="nc">&nbsp;        UIManager.put(&quot;OptionPane.messageFont&quot;, new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 14));</b>
+<b class="nc">&nbsp;        UIManager.put(&quot;Button.arc&quot;, 30);</b>
+<b class="nc">&nbsp;        frame = new JFrame(&quot;BattleShip 2&quot;);</b>
+<b class="nc">&nbsp;        frame.setSize(900,500);</b>
+<b class="nc">&nbsp;        frame.setLayout(new BorderLayout());</b>
+<b class="nc">&nbsp;        tabuleiro = new JPanel();</b>
+<b class="nc">&nbsp;        menu = new JPanel();</b>
+<b class="nc">&nbsp;        menu.setBackground(new Color(15,15,15));</b>
+<b class="nc">&nbsp;        menu.setLayout(new MigLayout(&quot;wrap 1&quot;, &quot;[grow, fill]&quot;,&quot;&quot;));</b>
+<b class="nc">&nbsp;        tabuleiro.setPreferredSize(new Dimension(500,500));</b>
+<b class="nc">&nbsp;        menu.setPreferredSize(new Dimension(400,500));</b>
+<b class="nc">&nbsp;        tabuleiro.setLayout(new MigLayout(&quot;wrap 10, gap 2, insets 2&quot;,&quot;[grow, fill, sg]&quot;,&quot;[grow, fill, sg]&quot;));</b>
+<b class="nc">&nbsp;        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</b>
+&nbsp;
+<b class="nc">&nbsp;        addComponentsTabuleiro();</b>
+<b class="nc">&nbsp;        addComponentsMenu();</b>
+&nbsp;
+<b class="nc">&nbsp;        frame.add(tabuleiro, BorderLayout.CENTER);</b>
+<b class="nc">&nbsp;        frame.add(menu,BorderLayout.EAST);</b>
+&nbsp;
+<b class="nc">&nbsp;        t = new Time(frame, 30);</b>
+<b class="nc">&nbsp;        t.start();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Centra a janela no ecrã e torna-a visível, dando início à interface do jogo.
+&nbsp;     */
+&nbsp;    public void start(){
+<b class="nc">&nbsp;        frame.setLocationRelativeTo(null);</b>
+<b class="nc">&nbsp;        frame.setVisible(true);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Cria e inicializa as 100 células (JLabels) que constituem a grelha visual do tabuleiro 10x10.
+&nbsp;     */
+&nbsp;    private void addComponentsTabuleiro(){
+<b class="nc">&nbsp;        for (int i = 0; i &lt; 100; i++) {</b>
+<b class="nc">&nbsp;            JLabel label = new JLabel(&quot;&quot;);</b>
+<b class="nc">&nbsp;            label.setOpaque(true);</b>
+<b class="nc">&nbsp;            label.setBackground(new Color(31, 78, 107));</b>
+<b class="nc">&nbsp;            tabuleiro.add(label);</b>
+<b class="nc">&nbsp;            labelsMap[i/10][i%10] = label;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Método auxiliar para instanciar e estilizar um {@link JButton} com estética Neon personalizada.
+&nbsp;     *
+&nbsp;     * @param texto O texto a ser exibido no botão.
+&nbsp;     * @param corBorda A cor da borda do botão em formato Hexadecimal (ex: &quot;#BC13FE&quot;).
+&nbsp;     * @param corTexto A cor do texto em formato Hexadecimal.
+&nbsp;     * @return O botão configurado com os estilos visuais aplicados.
+&nbsp;     */
+&nbsp;    private JButton botaoNeon(String texto, String corBorda, String corTexto) {
+<b class="nc">&nbsp;        JButton b = new JButton(texto);</b>
+<b class="nc">&nbsp;        b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</b>
+<b class="nc">&nbsp;        b.setFocusPainted(false);</b>
+<b class="nc">&nbsp;        b.setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 15));</b>
+<b class="nc">&nbsp;        b.putClientProperty(FlatClientProperties.STYLE,</b>
+&nbsp;                &quot;arc: 30;&quot; +
+&nbsp;                        &quot;borderWidth: 2;&quot; +
+&nbsp;                        &quot;background: #282828;&quot; +
+&nbsp;                        &quot;hoverBackground: #333333;&quot; +
+&nbsp;                        &quot;pressedBackground: #1E1E1E;&quot; +
+&nbsp;                        &quot;foreground: &quot; + corTexto + &quot;;&quot; +
+&nbsp;                        &quot;borderColor: &quot; + corBorda + &quot;;&quot; +
+&nbsp;                        &quot;hoverBorderColor: &quot; + corBorda + &quot;;&quot; +
+&nbsp;                        &quot;pressedBorderColor: &quot; + corBorda + &quot;;&quot; +
+&nbsp;                        &quot;focusedBorderColor: &quot; + corBorda + &quot;;&quot;);
+<b class="nc">&nbsp;        return b;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Atualiza a representação gráfica do tabuleiro no ecrã com base na matriz lógica
+&nbsp;     * e no estado atual dos navios da frota (tiros na água, acertos e navios afundados).
+&nbsp;     */
+&nbsp;    private void updateBoard(){
+<b class="nc">&nbsp;        for (IShip ship : myFleet.getShips()) {</b>
+<b class="nc">&nbsp;            if (!ship.stillFloating()) {</b>
+<b class="nc">&nbsp;                for (IPosition ship_pos : ship.getPositions())</b>
+<b class="nc">&nbsp;                    map[ship_pos.getRow()][ship_pos.getColumn()] = SHIP_DEAD;</b>
+<b class="nc">&nbsp;                for (IPosition adjacent_pos : ship.getAdjacentPositions())</b>
+<b class="nc">&nbsp;                    map[adjacent_pos.getRow()][adjacent_pos.getColumn()] = SHIP_ADJACENT_MARKER;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        for (int i = 0; i &lt; 10; i++) {</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; 10; j++) {</b>
+<b class="nc">&nbsp;                switch (map[i][j]){</b>
+&nbsp;                    case SHOT_SHIP_MARKER -&gt; {
+<b class="nc">&nbsp;                        labelsMap[i][j].setBackground(Color.decode(&quot;#6B3F1D&quot;));</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setForeground(Color.decode(&quot;#FF073A&quot;));</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setText(&quot;X&quot;);</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setHorizontalAlignment(0);</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 20));</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                    case SHIP_MARKER -&gt; labelsMap[i][j].setBackground(Color.decode(&quot;#A0693A&quot;));</b>
+&nbsp;                    case SHIP_DEAD -&gt; {
+<b class="nc">&nbsp;                        labelsMap[i][j].setBackground(Color.decode(&quot;#3E2412&quot;));</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setForeground(Color.decode(&quot;#FF073A&quot;));</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setText(&quot;X&quot;);</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setHorizontalAlignment(0);</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 20));</b>
+&nbsp;                    }
+&nbsp;                    case SHOT_WATER_MARKER -&gt; {
+<b class="nc">&nbsp;                        labelsMap[i][j].setBackground(Color.decode(&quot;#1F4E6B&quot;));</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setForeground(Color.decode(&quot;#BFE3F5&quot;));</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setText(&quot;•&quot;);</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setHorizontalAlignment(0);</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 20));</b>
+&nbsp;                    }
+&nbsp;                    case SHIP_ADJACENT_MARKER -&gt; {
+<b class="nc">&nbsp;                        labelsMap[i][j].setBackground(Color.decode(&quot;#173B52&quot;));</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setForeground(Color.decode(&quot;#BFE3F5&quot;));</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setText(&quot;•&quot;);</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setHorizontalAlignment(0);</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 20));</b>
+&nbsp;                    }
+&nbsp;
+&nbsp;                    default -&gt; {
+<b class="nc">&nbsp;                        labelsMap[i][j].setBackground(new Color(31, 78, 107));</b>
+<b class="nc">&nbsp;                        labelsMap[i][j].setText(&quot;&quot;);</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifica se a partida terminou (todos os navios afundados). Em caso afirmativo,
+&nbsp;     * exibe uma caixa de diálogo informando o fim do jogo e permite reiniciar a partida ou sair.
+&nbsp;     */
+&nbsp;    private void checkwin(){
+<b class="nc">&nbsp;        if(game.getRemainingShips() &gt; 0) return;</b>
+&nbsp;
+<b class="nc">&nbsp;        String[] opcoes = {&quot;Novo Jogo&quot;, &quot;Fechar&quot;};</b>
+<b class="nc">&nbsp;        int escolha = JOptionPane.showOptionDialog(frame,</b>
+<b class="nc">&nbsp;                &quot;Fim do Jogo em &quot; + game.getAlienMoves().size() + &quot; Rajadas&quot;, &quot;Fim&quot;,</b>
+&nbsp;                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+&nbsp;                null, opcoes, opcoes[0]);
+&nbsp;
+<b class="nc">&nbsp;        if (escolha == 0){</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; 10; i++) {</b>
+<b class="nc">&nbsp;                for (int j = 0; j &lt; 10; j++) {</b>
+<b class="nc">&nbsp;                    map[i][j] = EMPTY_MARKER;</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            gerada = false;</b>
+<b class="nc">&nbsp;            myFleet = new Fleet();</b>
+<b class="nc">&nbsp;            game = null;</b>
+<b class="nc">&nbsp;            updateBoard();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        else System.exit(0);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Cria e adiciona todos os componentes ao painel lateral do menu,
+&nbsp;     * incluindo botões de controlo, campo de texto e respetivos listeners de eventos.
+&nbsp;     */
+&nbsp;    private void addComponentsMenu(){
+&nbsp;
+&nbsp;        // Botão para gerar frota aleatória
+<b class="nc">&nbsp;        JButton geraFrota = botaoNeon(&quot;Gerar Frota&quot;,&quot;#BC13FE&quot;, &quot;#FFFFFF&quot;);</b>
+<b class="nc">&nbsp;        geraFrota.addActionListener(e-&gt;{</b>
+<b class="nc">&nbsp;            if(gerada) return;</b>
+<b class="nc">&nbsp;            myFleet = Fleet.createRandom();</b>
+<b class="nc">&nbsp;            game = new Game(myFleet);</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; 10; i++) {</b>
+<b class="nc">&nbsp;                for (int j = 0; j &lt; 10; j++) {</b>
+<b class="nc">&nbsp;                    map[i][j] = EMPTY_MARKER;</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            for (IShip ship : myFleet.getShips()) {</b>
+<b class="nc">&nbsp;                if (ship.stillFloating()) {</b>
+<b class="nc">&nbsp;                    for (IPosition ship_pos : ship.getPositions())</b>
+<b class="nc">&nbsp;                        map[ship_pos.getRow()][ship_pos.getColumn()] = SHIP_MARKER;</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            updateBoard();</b>
+<b class="nc">&nbsp;            gerada = true;</b>
+&nbsp;
+&nbsp;        });
+&nbsp;
+&nbsp;        // Campo de texto para introdução da rajada
+<b class="nc">&nbsp;        fieldRajada = new JTextField();</b>
+<b class="nc">&nbsp;        fieldRajada.setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 15));</b>
+<b class="nc">&nbsp;        fieldRajada.setHorizontalAlignment(JTextField.CENTER);</b>
+<b class="nc">&nbsp;        fieldRajada.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, &quot;ex: A1 A2 A3&quot;);</b>
+<b class="nc">&nbsp;        fieldRajada.putClientProperty(FlatClientProperties.STYLE,</b>
+&nbsp;                &quot;arc: 30;&quot; +
+&nbsp;                        &quot;borderWidth: 2;&quot; +
+&nbsp;                        &quot;background: #191919;&quot; +
+&nbsp;                        &quot;foreground: #FFFFFF;&quot; +
+&nbsp;                        &quot;caretColor: #00F0FF;&quot; +
+&nbsp;                        &quot;borderColor: #00F0FF;&quot; +
+&nbsp;                        &quot;focusedBorderColor: #00F0FF;&quot; +
+&nbsp;                        &quot;margin: 4,12,4,12;&quot;);
+&nbsp;
+&nbsp;        // Botão para submeter a rajada
+<b class="nc">&nbsp;        rajada = botaoNeon(&quot;Rajada&quot;,&quot;#FF5C00&quot;, &quot;#FFFFFF&quot;);</b>
+<b class="nc">&nbsp;        rajada.addActionListener(e-&gt;{</b>
+<b class="nc">&nbsp;            if(game== null || fieldRajada.getText().isEmpty()) return;</b>
+<b class="nc">&nbsp;            t.reiniciar();</b>
+<b class="nc">&nbsp;            Scanner in = new Scanner(fieldRajada.getText());</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                game.readEnemyFire(in);</b>
+&nbsp;            }
+&nbsp;            catch (IllegalArgumentException i){
+<b class="nc">&nbsp;                JOptionPane.showMessageDialog(frame, i.getMessage(),</b>
+&nbsp;                        &quot;ERRO na Rajada&quot;, JOptionPane.INFORMATION_MESSAGE);
+<b class="nc">&nbsp;            }Game.printBoardShots(game.getAlienMoves(),map);</b>
+&nbsp;            in.close();
+&nbsp;
+<b class="nc">&nbsp;            Game.printBoardShots(game.getAlienMoves(),map);</b>
+&nbsp;
+<b class="nc">&nbsp;            updateBoard();</b>
+<b class="nc">&nbsp;            checkwin();</b>
+&nbsp;        });
+&nbsp;
+&nbsp;        // Botão para disparar uma rajada aleatória
+<b class="nc">&nbsp;        JButton rajadaRandom = botaoNeon(&quot;Rajada Aleatoria&quot;, &quot;#39FF14&quot;, &quot;#FFFFFF&quot;);</b>
+<b class="nc">&nbsp;        rajadaRandom.addActionListener(e-&gt;{</b>
+<b class="nc">&nbsp;            if(game== null) return;</b>
+<b class="nc">&nbsp;            t.reiniciar();</b>
+<b class="nc">&nbsp;            game.randomEnemyFire();</b>
+<b class="nc">&nbsp;            Game.printBoardShots(game.getAlienMoves(),map);</b>
+<b class="nc">&nbsp;            updateBoard();</b>
+<b class="nc">&nbsp;            checkwin();</b>
+&nbsp;        });
+&nbsp;
+&nbsp;        // Botão para desistir da partida
+<b class="nc">&nbsp;        JButton desistir  = botaoNeon(&quot;Desistir&quot;,&quot;#FF073A&quot;, &quot;#FF073A&quot;);</b>
+<b class="nc">&nbsp;        desistir.addActionListener(e-&gt;{</b>
+<b class="nc">&nbsp;            String[] opcoes = {&quot;Reiniciar&quot;, &quot;Fechar&quot;};</b>
+<b class="nc">&nbsp;            int escolha = JOptionPane.showOptionDialog(frame,</b>
+&nbsp;                    &quot;Queres mesmo desistir?&quot;, &quot;Desistir&quot;,
+&nbsp;                    JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+&nbsp;                    null, opcoes, opcoes[0]);
+&nbsp;
+<b class="nc">&nbsp;            if (escolha == 0){</b>
+<b class="nc">&nbsp;                for (int i = 0; i &lt; 10; i++) {</b>
+<b class="nc">&nbsp;                    for (int j = 0; j &lt; 10; j++) {</b>
+<b class="nc">&nbsp;                        map[i][j] = EMPTY_MARKER;</b>
+&nbsp;                    }
+&nbsp;                }
+<b class="nc">&nbsp;                gerada = false;</b>
+<b class="nc">&nbsp;                myFleet = new Fleet();</b>
+<b class="nc">&nbsp;                game = null;</b>
+<b class="nc">&nbsp;                updateBoard();</b>
+&nbsp;            }
+<b class="nc">&nbsp;            else System.exit(0);</b>
+&nbsp;        });
+&nbsp;
+<b class="nc">&nbsp;        menu.add(geraFrota, &quot;h 50!, gapbottom 47, gaptop 30&quot;);</b>
+<b class="nc">&nbsp;        menu.add(fieldRajada, &quot;h 75!&quot;);</b>
+<b class="nc">&nbsp;        menu.add(rajada,&quot;h 50!&quot;);</b>
+<b class="nc">&nbsp;        menu.add(rajadaRandom,&quot;h 50!&quot;);</b>
+<b class="nc">&nbsp;        menu.add(desistir, &quot;h 50!,gaptop 47&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Ponto de entrada principal para execução autónoma da interface gráfica.
+&nbsp;     *
+&nbsp;     * @param args Argumentos da linha de comandos (não utilizados).
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        GameWindow g = new GameWindow();</b>
+<b class="nc">&nbsp;        g.start();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-11-06 14:29</div>
+</div>
+</body>
+</html>

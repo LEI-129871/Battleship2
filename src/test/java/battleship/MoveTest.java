@@ -1,0 +1,7 @@
+package battleship;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class MoveTest {
+
+}
