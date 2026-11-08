@@ -1,0 +1,6 @@
+# 129871 - David Sousa
+version: "1.0"
+profile:
+  base:
+    name: empty
+  inspections: []
