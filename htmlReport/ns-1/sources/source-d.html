@@ -1,0 +1,202 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Main</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">battleship</a>
+</div>
+
+<h1>Coverage Summary for Class: Main (battleship)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Main</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/31)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/**
+&nbsp; * 
+&nbsp; */
+&nbsp;package battleship;
+&nbsp;
+&nbsp;import java.util.Arrays;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import static java.lang.Thread.sleep;
+&nbsp;
+<b class="nc">&nbsp;public class Main</b>
+&nbsp;{
+&nbsp;	/**
+&nbsp;	 * Main.
+&nbsp;	 *
+&nbsp;	 * @param args the args
+&nbsp;	 */
+&nbsp;	public static void main(String[] args) {
+<b class="nc">&nbsp;		if(args.length == 0) {</b>
+<b class="nc">&nbsp;			System.out.println(&quot;***  Battleship  ***&quot;);</b>
+<b class="nc">&nbsp;			Tasks.menu();</b>
+&nbsp;		}
+&nbsp;		else{
+<b class="nc">&nbsp;			int port = 4444;</b>
+<b class="nc">&nbsp;			List&lt;String&gt; aux = Arrays.stream(args).toList();</b>
+<b class="nc">&nbsp;			GameWindow gw = null;</b>
+&nbsp;
+&nbsp;            try {
+<b class="nc">&nbsp;                if (aux.contains(&quot;--help&quot;) || aux.contains(&quot;-h&quot;)){</b>
+<b class="nc">&nbsp;                    System.out.println(&quot;&quot;&quot;</b>
+&nbsp;                        Uso: java -jar BattleshipGamePlayer-2.0.jar [OPÇÃO]...
+&nbsp;                
+&nbsp;                        Batalha naval dos Descobrimentos (BattleShip II).
+&nbsp;                        Sem opções, arranca o menu de consola.
+&nbsp;                
+&nbsp;                        Opções:
+&nbsp;                          --gui             abre a janela gráfica
+&nbsp;                          --server          arranca o servidor HTTP que recebe rajadas
+&nbsp;                          --port [1024-65535]  porta do servidor, 4444 default
+&nbsp;                          -h, --help        mostra esta ajuda e termina
+&nbsp;                
+&nbsp;                        Exemplos:
+&nbsp;                          java -jar BattleshipGamePlayer-2.0.jar
+&nbsp;                          java -jar BattleshipGamePlayer-2.0.jar --gui
+&nbsp;                          java -jar BattleshipGamePlayer-2.0.jar --gui --server
+&nbsp;                    &quot;&quot;&quot;);
+&nbsp;					return;
+&nbsp;                }
+<b class="nc">&nbsp;				if (aux.contains(&quot;--gui&quot;)){</b>
+<b class="nc">&nbsp;					gw = new GameWindow();</b>
+<b class="nc">&nbsp;					gw.start();</b>
+&nbsp;				}
+<b class="nc">&nbsp;                if(aux.contains(&quot;--port&quot;)) {</b>
+<b class="nc">&nbsp;	                port = Integer.parseInt(aux.get(aux.indexOf(&quot;--port&quot;) + 1));</b>
+<b class="nc">&nbsp;					if(port &gt; 65535 || port &lt; 1024) {</b>
+<b class="nc">&nbsp;						System.err.println(&quot;porta num range nao permitido!&quot;);</b>
+<b class="nc">&nbsp;						throw new IllegalStateException();</b>
+&nbsp;					}
+&nbsp;                }
+<b class="nc">&nbsp;                if (aux.contains(&quot;--server&quot;)){</b>
+<b class="nc">&nbsp;					final GameWindow GameWindowFinal = gw;</b>
+<b class="nc">&nbsp;					final int serverPort = port;</b>
+<b class="nc">&nbsp;                    Server server = new Server();</b>
+<b class="nc">&nbsp;                    if(!aux.contains(&quot;--gui&quot;)){</b>
+<b class="nc">&nbsp;                        System.out.println(&quot;***  Battleship  ***&quot;);</b>
+<b class="nc">&nbsp;						Thread srvr = new Thread(() -&gt; server.run(serverPort,GameWindowFinal,Tasks.game,true));</b>
+<b class="nc">&nbsp;						srvr.start();</b>
+&nbsp;						try {
+<b class="nc">&nbsp;							Thread.sleep(2000);</b>
+&nbsp;						} catch (InterruptedException e) {
+<b class="nc">&nbsp;							Thread.currentThread().interrupt();</b>
+&nbsp;						}
+<b class="nc">&nbsp;                        Tasks.menu();</b>
+<b class="nc">&nbsp;						server.stop();</b>
+&nbsp;                    }
+&nbsp;					else {
+<b class="nc">&nbsp;						server.run(port, gw, Tasks.game, false);</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;            } catch (Exception e) {
+<b class="nc">&nbsp;				System.out.println(&quot;Erro inesperado corra com a flag --help ou -h para obter ajuda&quot;);</b>
+&nbsp;				return;
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-11-06 14:29</div>
+</div>
+</body>
+</html>
