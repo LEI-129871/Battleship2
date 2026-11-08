@@ -21,5 +21,4 @@ public class LargeClassSmell {
     public int method13() { return 13; }
     public int method14() { return 14; }
     public int method15() { return 15; }
-    public int method16() { return 16; }
 }
