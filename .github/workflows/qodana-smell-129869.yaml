@@ -1,25 +1,30 @@
 # 129869 - Diogo Gonçalves
 name: Qodana smell gate 129869
+
 on:
   pull_request:
   push:
     branches: [master]
   workflow_dispatch:
+
 permissions:
   contents: read
   checks: write
   pull-requests: write
+
 jobs:
   qodana:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
+
       - uses: JetBrains/qodana-action@v2026.2
         with:
           args: --config qodana-129869.yaml --property project.open.type=Maven
+          use-caches: false
           use-annotations: true
           post-pr-comment: true
           upload-result: true

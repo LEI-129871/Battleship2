@@ -10,7 +10,7 @@ profile:
       enabled: true
       options:
         m_limit: 65
-        
+
     - inspection: CyclomaticComplexity
       enabled: true
       options:
