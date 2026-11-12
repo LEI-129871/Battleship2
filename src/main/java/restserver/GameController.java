@@ -155,6 +155,8 @@ public class GameController {
 		return game.getRemainingShips() == 0;
 	}
 
+
+
 	// =========================================================================
 	// Helpers
 	// =========================================================================
@@ -186,10 +188,10 @@ public class GameController {
 				dto.outcome = "MISS";
 			} else if (sr.sunk()) {
 				dto.outcome  = "SUNK";
-				dto.shipType = sr.ship().getCategory();
+				dto.shipType = sr.shipCategory();
 			} else {
 				dto.outcome  = "HIT";
-				dto.shipType = sr.ship().getCategory();
+				dto.shipType = sr.shipCategory();
 			}
 			results.add(dto);
 		}
