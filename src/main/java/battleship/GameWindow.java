@@ -180,6 +180,14 @@ public class GameWindow {
         return b;
     }
 
+    private void paintCell(int i, int j, String color1, String color2, String icon){
+        labelsMap[i][j].setBackground(Color.decode(color1));
+        labelsMap[i][j].setForeground(Color.decode(color2));
+        labelsMap[i][j].setText(icon);
+        labelsMap[i][j].setHorizontalAlignment(0);
+        labelsMap[i][j].setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 20));
+    }
+
     /**
      * Atualiza a representação gráfica do tabuleiro no ecrã com base na matriz lógica
      * e no estado atual dos navios da frota (tiros na água, acertos e navios afundados).
@@ -197,36 +205,11 @@ public class GameWindow {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 switch (map[i][j]){
-                    case SHOT_SHIP_MARKER -> {
-                        labelsMap[i][j].setBackground(Color.decode("#6B3F1D"));
-                        labelsMap[i][j].setForeground(Color.decode("#FF073A"));
-                        labelsMap[i][j].setText("X");
-                        labelsMap[i][j].setHorizontalAlignment(0);
-                        labelsMap[i][j].setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 20));
-                    }
+                    case SHOT_SHIP_MARKER -> paintCell(i, j, "#6B3F1D", "#FF073A", "X");
                     case SHIP_MARKER -> labelsMap[i][j].setBackground(Color.decode("#A0693A"));
-                    case SHIP_DEAD -> {
-                        labelsMap[i][j].setBackground(Color.decode("#3E2412"));
-                        labelsMap[i][j].setForeground(Color.decode("#FF073A"));
-                        labelsMap[i][j].setText("X");
-                        labelsMap[i][j].setHorizontalAlignment(0);
-                        labelsMap[i][j].setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 20));
-                    }
-                    case SHOT_WATER_MARKER -> {
-                        labelsMap[i][j].setBackground(Color.decode("#1F4E6B"));
-                        labelsMap[i][j].setForeground(Color.decode("#BFE3F5"));
-                        labelsMap[i][j].setText("•");
-                        labelsMap[i][j].setHorizontalAlignment(0);
-                        labelsMap[i][j].setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 20));
-                    }
-                    case SHIP_ADJACENT_MARKER -> {
-                        labelsMap[i][j].setBackground(Color.decode("#173B52"));
-                        labelsMap[i][j].setForeground(Color.decode("#BFE3F5"));
-                        labelsMap[i][j].setText("•");
-                        labelsMap[i][j].setHorizontalAlignment(0);
-                        labelsMap[i][j].setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.BOLD, 20));
-                    }
-
+                    case SHIP_DEAD -> paintCell(i, j, "#3E2412", "#FF073A", "X");
+                    case SHOT_WATER_MARKER -> paintCell(i, j, "#1F4E6B", "#BFE3F5", "•");
+                    case SHIP_ADJACENT_MARKER -> paintCell(i, j, "#173B52", "#BFE3F5", "•");
                     default -> {
                         labelsMap[i][j].setBackground(new Color(31, 78, 107));
                         labelsMap[i][j].setText("");
