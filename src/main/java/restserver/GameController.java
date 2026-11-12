@@ -100,7 +100,7 @@ public class GameController {
 		}
 
 		// ── 2. Validate incoming shots ───────────────────────────────────────
-		if (request.shots == null || request.shots.size() != Game.NUMBER_SHOTS) {
+		if (hasInvalidShotCount(request)) {
 			return error(HttpStatus.BAD_REQUEST,
 					"Exactly " + Game.NUMBER_SHOTS + " shots required per turn");
 		}
@@ -108,7 +108,7 @@ public class GameController {
 		// ── 3. Convert DTO positions → IPosition list ────────────────────────
 		List<IPosition> positions = new ArrayList<>();
 		for (ShotPosition sp : request.shots) {
-			if (sp.row == null || sp.row.isBlank() || sp.column < 1 || sp.column > 10) {
+			if (isInvalidPosition(sp)) {
 				return error(HttpStatus.BAD_REQUEST,
 						"Invalid position: row='" + sp.row + "' column=" + sp.column);
 			}
@@ -120,7 +120,7 @@ public class GameController {
 		ShotResponse m1bResponse = evaluateShots(positions, game, session);
 
 		// ── 5. Check if student won (all AI ships sunk) ──────────────────────
-		if (game.getRemainingShips() == 0) {
+		if (studentHasWon(game)) {
 			session.markStudentWins();
 			m1bResponse.gameStatus = "GAME_OVER";
 			m1bResponse.winner     = "STUDENT_WINS";
@@ -141,6 +141,18 @@ public class GameController {
 
 		// ── 7. Return m1b to student ─────────────────────────────────────────
 		return ResponseEntity.ok(m1bResponse);
+	}
+
+	private static boolean hasInvalidShotCount(ShotRequest request) {
+		return request.shots == null || request.shots.size() != Game.NUMBER_SHOTS;
+	}
+
+	private static boolean isInvalidPosition(ShotPosition sp) {
+		return sp.row == null || sp.row.isBlank() || sp.column < 1 || sp.column > 10;
+	}
+
+	private static boolean studentHasWon(IGame game) {
+		return game.getRemainingShips() == 0;
 	}
 
 	// =========================================================================
