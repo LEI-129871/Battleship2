@@ -351,6 +351,9 @@ public class GameWindow {
         menu.add(desistir, "h 50!,gaptop 47");
     }
 
+    public String getShotsResult() {
+        return getGame().shotsResult();
+    }
 
     /**
      * Ponto de entrada principal para execução autónoma da interface gráfica.

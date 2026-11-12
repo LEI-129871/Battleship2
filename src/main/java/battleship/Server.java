@@ -72,7 +72,7 @@ public class Server {
                     gw.getFieldRajada().setText(tiros);
                     gw.getRajada().doClick();
                     // Redireciona a página web com os resultados acumulados dos tiros
-                    ctx.redirect("/?result=" + gw.getGame().shotsResult());
+                    ctx.redirect("/?result=" + gw.getShotsResult());
                 }
 
             });

@@ -13,7 +13,7 @@
 | Tasks::menu() | Overly Complex Method (CC = 19) | Extract Method | A definir |
 | Main::main() | Overly Complex Method (CC = 12) | Extract Method | A definir |
 | Game (shoot(), stillFloating()) | Message Chains (Law of Demeter) | Move Instance Method | 129869 |
-| Server (add(), post(), shotsResult()) | Message Chains (Law of Demeter) | Hide Delegate | A definir |
-| IMove / Move / Game | Inappropriate Intimacy (Cyclic Class Dependency) | Extract Interface | 129869 |
+| Server (add(), post(), shotsResult()) | Message Chains (Law of Demeter) | Hide Delegate | 129869 |
+| IMove / Move / Game | Inappropriate Intimacy (Cyclic Class Dependency) | Extract Interface | A definir |
 | Fleet / Ship | Inappropriate Intimacy (Cyclic Class Dependency) | Move Instance Method | A definir |
 | GameTest | Large Class (Overly Complex Class, CC = 108) | Extract Class | 129869 |
