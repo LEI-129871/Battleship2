@@ -260,4 +260,9 @@ public class Fleet implements IFleet
     {
 		printShips(ships);
     }
+
+	public boolean hit(IShip ship, IPosition pos) {
+		ship.shoot(pos);
+		return !ship.stillFloating();
+	}
 }
