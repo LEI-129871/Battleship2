@@ -174,6 +174,7 @@ class ServerTest {
 
         GameWindow gw = mock(GameWindow.class);
         when(gw.getGame()).thenReturn(game);
+        when(gw.getShotsResult()).thenCallRealMethod();
         when(gw.getFieldRajada()).thenReturn(field);
         when(gw.getRajada()).thenReturn(button);
         server.run(port, gw, game, false);
@@ -200,6 +201,7 @@ class ServerTest {
         JTextField field = new JTextField();
         GameWindow gw = mock(GameWindow.class);
         when(gw.getGame()).thenReturn(game);
+        when(gw.getShotsResult()).thenCallRealMethod();
         when(gw.getFieldRajada()).thenReturn(field);
         when(gw.getRajada()).thenReturn(new JButton());
         server.run(port, gw, game, false);

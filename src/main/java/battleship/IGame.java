@@ -35,7 +35,11 @@ public interface IGame
 
 	String shotsResult();
 
-	record ShotResult(boolean valid, boolean repeated, IShip ship, boolean sunk) {}
+	record ShotResult(boolean valid, boolean repeated, IShip ship, boolean sunk) {
+		public String shipCategory() {
+			return ship().getCategory();
+		}
+	}
 
 	/**
 	 * Fires a single shot at the specified position and indicates whether the shot is valid, repeated,

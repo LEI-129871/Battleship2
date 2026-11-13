@@ -64,4 +64,6 @@ public interface IFleet
 	 * Print status.
 	 */
 	void printStatus();
+
+    boolean hit(IShip ship, IPosition pos);
 }

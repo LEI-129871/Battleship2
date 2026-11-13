@@ -390,12 +390,12 @@ public class Game implements IGame
 			return new ShotResult(true, false, null, false);
 		else
 		{
-			ship.shoot(pos);
+			boolean sunk = myFleet.hit(ship, pos);
 			countHits++;
-			if (!ship.stillFloating()) {
+			if (sunk) {
 				countSinks++;
 			}
-			return new ShotResult(true, false, ship, !ship.stillFloating());
+			return new ShotResult(true, false, ship, sunk);
 		}
 	}
 
@@ -457,6 +457,7 @@ public class Game implements IGame
 			System.out.println("+--------------------------------------------------------------+");
 	}
 
+
 	/**
 	 * Formata os resultados da última rajada efetuada numa String delimitada por pipe ({@code |}),
 	 * adequada para envio como parâmetro HTTP para o cliente web.
@@ -479,4 +480,5 @@ public class Game implements IGame
 		}
 		return aux.toString();
 	}
+
 }
