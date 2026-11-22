@@ -4,7 +4,6 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.jetbrains_mono.FlatJetBrainsMonoFont;
 import net.miginfocom.swing.MigLayout;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -194,14 +193,7 @@ public class GameWindow {
      * e no estado atual dos navios da frota (tiros na água, acertos e navios afundados).
      */
     private void updateBoard(){
-        for (IShip ship : myFleet.getShips()) {
-            if (!ship.stillFloating()) {
-                for (IPosition ship_pos : ship.getPositions())
-                    map[ship_pos.getRow()][ship_pos.getColumn()] = SHIP_DEAD;
-                for (IPosition adjacent_pos : ship.getAdjacentPositions())
-                    map[adjacent_pos.getRow()][adjacent_pos.getColumn()] = SHIP_ADJACENT_MARKER;
-            }
-        }
+        updateDeadShips();
 
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -216,6 +208,17 @@ public class GameWindow {
                         labelsMap[i][j].setText("");
                     }
                 }
+            }
+        }
+    }
+
+    private void updateDeadShips() {
+        for (IShip ship : myFleet.getShips()) {
+            if (!ship.stillFloating()) {
+                for (IPosition ship_pos : ship.getPositions())
+                    map[ship_pos.getRow()][ship_pos.getColumn()] = SHIP_DEAD;
+                for (IPosition adjacent_pos : ship.getAdjacentPositions())
+                    map[adjacent_pos.getRow()][adjacent_pos.getColumn()] = SHIP_ADJACENT_MARKER;
             }
         }
     }
@@ -253,7 +256,27 @@ public class GameWindow {
      */
     private void addComponentsMenu(){
 
-        JButton geraFrota = createGenerateFleetButton();
+        // Botão para gerar frota aleatória
+        JButton geraFrota = botaoNeon("Gerar Frota","#BC13FE", "#FFFFFF");
+        geraFrota.addActionListener(e->{
+            if(gerada) return;
+            myFleet = Fleet.createRandom();
+            game = new Game(myFleet);
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+                    map[i][j] = EMPTY_MARKER;
+                }
+            }
+            for (IShip ship : myFleet.getShips()) {
+                if (ship.stillFloating()) {
+                    for (IPosition ship_pos : ship.getPositions())
+                        map[ship_pos.getRow()][ship_pos.getColumn()] = SHIP_MARKER;
+                }
+            }
+            updateBoard();
+            gerada = true;
+
+        });
 
         // Campo de texto para introdução da rajada
         fieldRajada = new JTextField();
@@ -330,31 +353,6 @@ public class GameWindow {
         menu.add(rajada,"h 50!");
         menu.add(rajadaRandom,"h 50!");
         menu.add(desistir, "h 50!,gaptop 47");
-    }
-
-    private @NotNull JButton createGenerateFleetButton() {
-        // Botão para gerar frota aleatória
-        JButton geraFrota = botaoNeon("Gerar Frota","#BC13FE", "#FFFFFF");
-        geraFrota.addActionListener(e->{
-            if(gerada) return;
-            myFleet = Fleet.createRandom();
-            game = new Game(myFleet);
-            for (int i = 0; i < 10; i++) {
-                for (int j = 0; j < 10; j++) {
-                    map[i][j] = EMPTY_MARKER;
-                }
-            }
-            for (IShip ship : myFleet.getShips()) {
-                if (ship.stillFloating()) {
-                    for (IPosition ship_pos : ship.getPositions())
-                        map[ship_pos.getRow()][ship_pos.getColumn()] = SHIP_MARKER;
-                }
-            }
-            updateBoard();
-            gerada = true;
-
-        });
-        return geraFrota;
     }
 
     public String getShotsResult() {
