@@ -1,6 +1,7 @@
 package restserver;
 
 import battleship.*;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -30,6 +31,10 @@ public class AiShotStrategy {
 	 */
 	public List<IPosition> computeShots(IGame game) {
 
+		return findTargetPositions(game);
+	}
+
+	private @NotNull List<IPosition> findTargetPositions(IGame game) {
 		// Build set of all positions already shot by the AI
 		Set<IPosition> alreadyShot = new HashSet<>();
 		for (IMove move : game.getAlienMoves()) {
