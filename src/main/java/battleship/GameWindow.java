@@ -226,6 +226,7 @@ public class GameWindow {
         }
     }
 
+    @SuppressWarnings("DuplicatedCode")
     private void updateDeadShips() {
         for (IShip ship : myFleet.getShips()) {
             if (!ship.stillFloating()) {
