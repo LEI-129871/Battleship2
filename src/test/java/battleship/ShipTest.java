@@ -237,5 +237,91 @@ public class ShipTest {
         assertEquals(3, shipBorder.getAdjacentPositions().size(), "Error: The number of adjacent positions of a barge in the middle of the tray should be 8.");
     }
 
+    @Test
+    @DisplayName("buildShip cria o tipo de navio certo para cada categoria e null para uma desconhecida")
+    void testBuildShip() {
+        Position p = new Position(5, 5);
+        assertInstanceOf(Barge.class, Ship.buildShip("barca", Compass.NORTH, p));
+        assertInstanceOf(Caravel.class, Ship.buildShip("caravela", Compass.NORTH, p));
+        assertInstanceOf(Carrack.class, Ship.buildShip("nau", Compass.NORTH, p));
+        assertInstanceOf(Frigate.class, Ship.buildShip("fragata", Compass.NORTH, p));
+        assertInstanceOf(Galleon.class, Ship.buildShip("galeao", Compass.NORTH, p));
+        assertNull(Ship.buildShip("desconhecido", Compass.NORTH, p), "Uma categoria desconhecida deve devolver null.");
+    }
+
+    @Test
+    @DisplayName("Os métodos com asserções falham com argumentos inválidos")
+    void testBuildShipNulos() {
+        Position p = new Position(5, 5);
+        assertThrows(AssertionError.class, () -> Ship.buildShip(null, Compass.NORTH, p));
+        assertThrows(AssertionError.class, () -> Ship.buildShip("barca", null, p));
+        assertThrows(AssertionError.class, () -> Ship.buildShip("barca", Compass.NORTH, null));
+        assertThrows(AssertionError.class, () -> ship.occupies(null));
+        assertThrows(AssertionError.class, () -> ship.tooCloseTo((IShip) null));
+        assertThrows(AssertionError.class, () -> ship.tooCloseTo((IPosition) null));
+        assertThrows(AssertionError.class, () -> ship.shoot(null));
+        assertThrows(AssertionError.class, () -> ship.shoot(new Position(Game.BOARD_SIZE, Game.BOARD_SIZE)));
+    }
+
+    @Test
+    @DisplayName("getPosition devolve a posição inicial do navio")
+    void testGetPosition() {
+        assertEquals(5, ship.getPosition().getRow(), "Erro: a linha da posição inicial devia ser 5.");
+        assertEquals(5, ship.getPosition().getColumn(), "Erro: a coluna da posição inicial devia ser 5.");
+    }
+
+    @Test
+    @DisplayName("Posições extremas num navio com várias posições desordenadas")
+    void testMostPosVariasPosicoes() {
+        Ship multi = new Frigate(Compass.NORTH, new Position(5, 5));
+        multi.getPositions().clear();
+        multi.getPositions().addAll(List.of(
+                new Position(5, 5), new Position(3, 2), new Position(6, 8), new Position(4, 4)));
+        assertEquals(3, multi.getTopMostPos(), "Erro: a linha mais acima devia ser 3.");
+        assertEquals(6, multi.getBottomMostPos(), "Erro: a linha mais abaixo devia ser 6.");
+        assertEquals(2, multi.getLeftMostPos(), "Erro: a coluna mais à esquerda devia ser 2.");
+        assertEquals(8, multi.getRightMostPos(), "Erro: a coluna mais à direita devia ser 8.");
+    }
+
+    @Test
+    @DisplayName("isInsideBoard é true dentro do tabuleiro e false fora de cada um dos 4 limites")
+    void testIsInsideBoard() {
+        assertTrue(ship.isInsideBoard());
+        assertTrue(shipBorder.isInsideBoard());
+        assertFalse(new Barge(Compass.NORTH, new Position(5, -1)).isInsideBoard(), "Fora à esquerda.");
+        assertFalse(new Barge(Compass.NORTH, new Position(5, Game.BOARD_SIZE)).isInsideBoard(), "Fora à direita.");
+        assertFalse(new Barge(Compass.NORTH, new Position(-1, 5)).isInsideBoard(), "Fora em cima.");
+        assertFalse(new Barge(Compass.NORTH, new Position(Game.BOARD_SIZE, 5)).isInsideBoard(), "Fora em baixo.");
+    }
+
+    @Test
+    @DisplayName("sink atinge todas as posições do navio")
+    void testSink() {
+        Ship frigate = new Frigate(Compass.NORTH, new Position(5, 5));
+        assertTrue(frigate.stillFloating());
+        frigate.sink();
+        assertFalse(frigate.stillFloating(), "Erro: o navio não devia flutuar depois de sink.");
+        for (IPosition p : frigate.getPositions())
+            assertTrue(p.isHit(), "Erro: todas as posições deviam estar atingidas.");
+    }
+
+    @Test
+    @DisplayName("toString inclui a categoria e o rumo do navio")
+    void testToString() {
+        String s = ship.toString();
+        assertTrue(s.startsWith("[" + ship.getCategory() + " " + ship.getBearing() + " "), "Erro: formato inesperado: " + s);
+        assertTrue(s.endsWith("]"), "Erro: devia terminar em ].");
+    }
+
+    @Test
+    @DisplayName("getAdjacentPositions numa fragata: sem repetidas e sem posições do próprio navio")
+    void testGetAdjacentPositionsVariasPosicoes() {
+        Ship frigate = new Frigate(Compass.NORTH, new Position(5, 5));
+        List<IPosition> adj = frigate.getAdjacentPositions();
+        assertEquals(14, adj.size(), "Erro: uma fragata longe das margens tem 14 posições adjacentes.");
+        for (IPosition a : adj)
+            assertFalse(frigate.getPositions().contains(a), "Erro: uma adjacente não pode ser do próprio navio.");
+    }
+
 
 }
