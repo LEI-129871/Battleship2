@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.jetbrains_mono.FlatJetBrainsMonoFont;
 import net.miginfocom.swing.MigLayout;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -256,27 +257,7 @@ public class GameWindow {
      */
     private void addComponentsMenu(){
 
-        // Botão para gerar frota aleatória
-        JButton geraFrota = botaoNeon("Gerar Frota","#BC13FE", "#FFFFFF");
-        geraFrota.addActionListener(e->{
-            if(gerada) return;
-            myFleet = Fleet.createRandom();
-            game = new Game(myFleet);
-            for (int i = 0; i < 10; i++) {
-                for (int j = 0; j < 10; j++) {
-                    map[i][j] = EMPTY_MARKER;
-                }
-            }
-            for (IShip ship : myFleet.getShips()) {
-                if (ship.stillFloating()) {
-                    for (IPosition ship_pos : ship.getPositions())
-                        map[ship_pos.getRow()][ship_pos.getColumn()] = SHIP_MARKER;
-                }
-            }
-            updateBoard();
-            gerada = true;
-
-        });
+        JButton geraFrota = criarBotaoGeraFrota();
 
         // Campo de texto para introdução da rajada
         fieldRajada = new JTextField();
@@ -293,26 +274,7 @@ public class GameWindow {
                         "focusedBorderColor: #00F0FF;" +
                         "margin: 4,12,4,12;");
 
-        // Botão para submeter a rajada
-        rajada = botaoNeon("Rajada","#FF5C00", "#FFFFFF");
-        rajada.addActionListener(e->{
-            if(game== null || fieldRajada.getText().isEmpty()) return;
-            t.reiniciar();
-            Scanner in = new Scanner(fieldRajada.getText());
-            try {
-                game.readEnemyFire(in);
-            }
-            catch (IllegalArgumentException i){
-                JOptionPane.showMessageDialog(frame, i.getMessage(),
-                        "ERRO na Rajada", JOptionPane.INFORMATION_MESSAGE);
-            }Game.printBoardShots(game.getAlienMoves(),map);
-            in.close();
-
-            Game.printBoardShots(game.getAlienMoves(),map);
-
-            updateBoard();
-            checkwin();
-        });
+        criarBotaoRajada();
 
         // Botão para disparar uma rajada aleatória
         JButton rajadaRandom = botaoNeon("Rajada Aleatoria", "#39FF14", "#FFFFFF");
@@ -353,6 +315,54 @@ public class GameWindow {
         menu.add(rajada,"h 50!");
         menu.add(rajadaRandom,"h 50!");
         menu.add(desistir, "h 50!,gaptop 47");
+    }
+
+    private void criarBotaoRajada() {
+        // Botão para submeter a rajada
+        rajada = botaoNeon("Rajada","#FF5C00", "#FFFFFF");
+        rajada.addActionListener(e->{
+            if(game== null || fieldRajada.getText().isEmpty()) return;
+            t.reiniciar();
+            Scanner in = new Scanner(fieldRajada.getText());
+            try {
+                game.readEnemyFire(in);
+            }
+            catch (IllegalArgumentException i){
+                JOptionPane.showMessageDialog(frame, i.getMessage(),
+                        "ERRO na Rajada", JOptionPane.INFORMATION_MESSAGE);
+            }Game.printBoardShots(game.getAlienMoves(),map);
+            in.close();
+
+            Game.printBoardShots(game.getAlienMoves(),map);
+
+            updateBoard();
+            checkwin();
+        });
+    }
+
+    private @NotNull JButton criarBotaoGeraFrota() {
+        // Botão para gerar frota aleatória
+        JButton geraFrota = botaoNeon("Gerar Frota","#BC13FE", "#FFFFFF");
+        geraFrota.addActionListener(e->{
+            if(gerada) return;
+            myFleet = Fleet.createRandom();
+            game = new Game(myFleet);
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+                    map[i][j] = EMPTY_MARKER;
+                }
+            }
+            for (IShip ship : myFleet.getShips()) {
+                if (ship.stillFloating()) {
+                    for (IPosition ship_pos : ship.getPositions())
+                        map[ship_pos.getRow()][ship_pos.getColumn()] = SHIP_MARKER;
+                }
+            }
+            updateBoard();
+            gerada = true;
+
+        });
+        return geraFrota;
     }
 
     public String getShotsResult() {
