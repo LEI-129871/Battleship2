@@ -421,6 +421,11 @@ public abstract class Ship implements IShip
 			position.shoot();
 	}
 
+	public boolean hit(IPosition pos) {
+		shoot(pos);
+		return !stillFloating();
+	}
+
 	/**
 	 * To string string.
 	 *

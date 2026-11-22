@@ -52,7 +52,7 @@ public class Move implements IMove {
 	}
 
 	private void registerHit(IGame.ShotResult result, Map<String, Integer> hitsPerBoat, Map<String, Integer> sunkBoatsCount) {
-		String boatName = result.ship().getCategory();
+		String boatName = getShipCategory(result);
 		hitsPerBoat.put(boatName,
 				hitsPerBoat.getOrDefault(boatName, 0) + 1);
 
@@ -67,6 +67,10 @@ public class Move implements IMove {
 			// Navio atingido, mas não afundado
 			SoundPlayer.playSound("NavioAtingido.mp3");
 		}
+	}
+
+	private String getShipCategory(IGame.ShotResult result) {
+		return result.ship().getCategory();
 	}
 
 	/**

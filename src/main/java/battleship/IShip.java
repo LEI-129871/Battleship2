@@ -128,7 +128,9 @@ public interface IShip
 	 */
 	void sink();
 
-	/**
+    boolean hit(IPosition pos);
+
+    /**
 	 * Is inside board boolean.
 	 *
 	 * @return the boolean

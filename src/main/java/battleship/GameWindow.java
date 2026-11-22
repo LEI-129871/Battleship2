@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.jetbrains_mono.FlatJetBrainsMonoFont;
 import net.miginfocom.swing.MigLayout;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -102,6 +103,19 @@ public class GameWindow {
      * Constrói a janela do jogo, inicializa os LookAndFeel personalizados (FlatLaf),
      * define as configurações de temas, dimensões e monta os componentes do tabuleiro e menu.
      */
+
+    private void reiniciarJogo() {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                map[i][j] = EMPTY_MARKER;
+            }
+        }
+        gerada = false;
+        myFleet = new Fleet();
+        game = null;
+        updateBoard();
+    }
+
     public GameWindow(){
         FlatLightLaf.setup();
         FlatJetBrainsMonoFont.install();
@@ -193,14 +207,7 @@ public class GameWindow {
      * e no estado atual dos navios da frota (tiros na água, acertos e navios afundados).
      */
     private void updateBoard(){
-        for (IShip ship : myFleet.getShips()) {
-            if (!ship.stillFloating()) {
-                for (IPosition ship_pos : ship.getPositions())
-                    map[ship_pos.getRow()][ship_pos.getColumn()] = SHIP_DEAD;
-                for (IPosition adjacent_pos : ship.getAdjacentPositions())
-                    map[adjacent_pos.getRow()][adjacent_pos.getColumn()] = SHIP_ADJACENT_MARKER;
-            }
-        }
+        updateDeadShips();
 
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -219,6 +226,18 @@ public class GameWindow {
         }
     }
 
+    @SuppressWarnings("DuplicatedCode")
+    private void updateDeadShips() {
+        for (IShip ship : myFleet.getShips()) {
+            if (!ship.stillFloating()) {
+                for (IPosition ship_pos : ship.getPositions())
+                    map[ship_pos.getRow()][ship_pos.getColumn()] = SHIP_DEAD;
+                for (IPosition adjacent_pos : ship.getAdjacentPositions())
+                    map[adjacent_pos.getRow()][adjacent_pos.getColumn()] = SHIP_ADJACENT_MARKER;
+            }
+        }
+    }
+
     /**
      * Verifica se a partida terminou (todos os navios afundados). Em caso afirmativo,
      * exibe uma caixa de diálogo informando o fim do jogo e permite reiniciar a partida ou sair.
@@ -233,15 +252,7 @@ public class GameWindow {
                 null, opcoes, opcoes[0]);
 
         if (escolha == 0){
-            for (int i = 0; i < 10; i++) {
-                for (int j = 0; j < 10; j++) {
-                    map[i][j] = EMPTY_MARKER;
-                }
-            }
-            gerada = false;
-            myFleet = new Fleet();
-            game = null;
-            updateBoard();
+            reiniciarJogo();
         }
         else System.exit(0);
     }
@@ -252,27 +263,7 @@ public class GameWindow {
      */
     private void addComponentsMenu(){
 
-        // Botão para gerar frota aleatória
-        JButton geraFrota = botaoNeon("Gerar Frota","#BC13FE", "#FFFFFF");
-        geraFrota.addActionListener(e->{
-            if(gerada) return;
-            myFleet = Fleet.createRandom();
-            game = new Game(myFleet);
-            for (int i = 0; i < 10; i++) {
-                for (int j = 0; j < 10; j++) {
-                    map[i][j] = EMPTY_MARKER;
-                }
-            }
-            for (IShip ship : myFleet.getShips()) {
-                if (ship.stillFloating()) {
-                    for (IPosition ship_pos : ship.getPositions())
-                        map[ship_pos.getRow()][ship_pos.getColumn()] = SHIP_MARKER;
-                }
-            }
-            updateBoard();
-            gerada = true;
-
-        });
+        JButton geraFrota = criarBotaoGeraFrota();
 
         // Campo de texto para introdução da rajada
         fieldRajada = new JTextField();
@@ -289,26 +280,7 @@ public class GameWindow {
                         "focusedBorderColor: #00F0FF;" +
                         "margin: 4,12,4,12;");
 
-        // Botão para submeter a rajada
-        rajada = botaoNeon("Rajada","#FF5C00", "#FFFFFF");
-        rajada.addActionListener(e->{
-            if(game== null || fieldRajada.getText().isEmpty()) return;
-            t.reiniciar();
-            Scanner in = new Scanner(fieldRajada.getText());
-            try {
-                game.readEnemyFire(in);
-            }
-            catch (IllegalArgumentException i){
-                JOptionPane.showMessageDialog(frame, i.getMessage(),
-                        "ERRO na Rajada", JOptionPane.INFORMATION_MESSAGE);
-            }Game.printBoardShots(game.getAlienMoves(),map);
-            in.close();
-
-            Game.printBoardShots(game.getAlienMoves(),map);
-
-            updateBoard();
-            checkwin();
-        });
+        criarBotaoRajada();
 
         // Botão para disparar uma rajada aleatória
         JButton rajadaRandom = botaoNeon("Rajada Aleatoria", "#39FF14", "#FFFFFF");
@@ -331,15 +303,7 @@ public class GameWindow {
                     null, opcoes, opcoes[0]);
 
             if (escolha == 0){
-                for (int i = 0; i < 10; i++) {
-                    for (int j = 0; j < 10; j++) {
-                        map[i][j] = EMPTY_MARKER;
-                    }
-                }
-                gerada = false;
-                myFleet = new Fleet();
-                game = null;
-                updateBoard();
+                reiniciarJogo();
             }
             else System.exit(0);
         });
@@ -349,6 +313,54 @@ public class GameWindow {
         menu.add(rajada,"h 50!");
         menu.add(rajadaRandom,"h 50!");
         menu.add(desistir, "h 50!,gaptop 47");
+    }
+
+    private void criarBotaoRajada() {
+        // Botão para submeter a rajada
+        rajada = botaoNeon("Rajada","#FF5C00", "#FFFFFF");
+        rajada.addActionListener(e->{
+            if(game== null || fieldRajada.getText().isEmpty()) return;
+            t.reiniciar();
+            Scanner in = new Scanner(fieldRajada.getText());
+            try {
+                game.readEnemyFire(in);
+            }
+            catch (IllegalArgumentException i){
+                JOptionPane.showMessageDialog(frame, i.getMessage(),
+                        "ERRO na Rajada", JOptionPane.INFORMATION_MESSAGE);
+            }Game.printBoardShots(game.getAlienMoves(),map);
+            in.close();
+
+            Game.printBoardShots(game.getAlienMoves(),map);
+
+            updateBoard();
+            checkwin();
+        });
+    }
+
+    private @NotNull JButton criarBotaoGeraFrota() {
+        // Botão para gerar frota aleatória
+        JButton geraFrota = botaoNeon("Gerar Frota","#BC13FE", "#FFFFFF");
+        geraFrota.addActionListener(e->{
+            if(gerada) return;
+            myFleet = Fleet.createRandom();
+            game = new Game(myFleet);
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+                    map[i][j] = EMPTY_MARKER;
+                }
+            }
+            for (IShip ship : myFleet.getShips()) {
+                if (ship.stillFloating()) {
+                    for (IPosition ship_pos : ship.getPositions())
+                        map[ship_pos.getRow()][ship_pos.getColumn()] = SHIP_MARKER;
+                }
+            }
+            updateBoard();
+            gerada = true;
+
+        });
+        return geraFrota;
     }
 
     public String getShotsResult() {
