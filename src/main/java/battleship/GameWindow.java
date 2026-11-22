@@ -103,6 +103,19 @@ public class GameWindow {
      * Constrói a janela do jogo, inicializa os LookAndFeel personalizados (FlatLaf),
      * define as configurações de temas, dimensões e monta os componentes do tabuleiro e menu.
      */
+
+    private void reiniciarJogo() {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                map[i][j] = EMPTY_MARKER;
+            }
+        }
+        gerada = false;
+        myFleet = new Fleet();
+        game = null;
+        updateBoard();
+    }
+
     public GameWindow(){
         FlatLightLaf.setup();
         FlatJetBrainsMonoFont.install();
@@ -238,15 +251,7 @@ public class GameWindow {
                 null, opcoes, opcoes[0]);
 
         if (escolha == 0){
-            for (int i = 0; i < 10; i++) {
-                for (int j = 0; j < 10; j++) {
-                    map[i][j] = EMPTY_MARKER;
-                }
-            }
-            gerada = false;
-            myFleet = new Fleet();
-            game = null;
-            updateBoard();
+            reiniciarJogo();
         }
         else System.exit(0);
     }
@@ -297,15 +302,7 @@ public class GameWindow {
                     null, opcoes, opcoes[0]);
 
             if (escolha == 0){
-                for (int i = 0; i < 10; i++) {
-                    for (int j = 0; j < 10; j++) {
-                        map[i][j] = EMPTY_MARKER;
-                    }
-                }
-                gerada = false;
-                myFleet = new Fleet();
-                game = null;
-                updateBoard();
+                reiniciarJogo();
             }
             else System.exit(0);
         });
