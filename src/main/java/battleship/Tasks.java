@@ -59,8 +59,7 @@ public class Tasks {
 					game.printMyBoard(false, true);
 					break;
 				case STATUS:
-					if (myFleet != null)
-						myFleet.printStatus();
+					showFleetStatus();
 					break;
 				case MAPA:
 					if (myFleet != null)
@@ -115,6 +114,11 @@ public class Tasks {
 			command = in.next();
 		}
 		System.out.println(GOODBYE_MESSAGE);
+	}
+
+	private static void showFleetStatus() {
+		if (myFleet != null)
+			myFleet.printStatus();
 	}
 
 	/**
