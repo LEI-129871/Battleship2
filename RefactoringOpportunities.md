@@ -19,3 +19,5 @@
 | IMove / Move / Game | Inappropriate Intimacy (Cyclic Class Dependency) | Extract Interface | 129871    |
 | Fleet / Ship | Inappropriate Intimacy (Cyclic Class Dependency) | Move Instance Method | 129871    |
 | GameTest | Large Class (Overly Complex Class, CC = 108) | Extract Class | 129869    |
+| SoundPlayer::playVolley() | Magic Number | Extract Constant | 129833 |
+| SoundPlayer::playSound() | Complex Expression | Introduce Variable | 129833 |
