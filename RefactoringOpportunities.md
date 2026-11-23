@@ -13,6 +13,7 @@
 | Tasks::menu() | Overly Complex Method (CC = 19) | Extract Method | 129833    |
 | Main::main() | Overly Complex Method (CC = 12) | Extract Method | 129833    | 
 | Main::main() (help condition) | Complex Conditional Expression | Introduce Variable | 129833 |
+| Main::main() (variable aux) | Poor Naming | Rename | 129833 |
 | Game (shoot(), stillFloating()) | Message Chains (Law of Demeter) | Move Instance Method | 129869    |
 | Server (add(), post(), shotsResult()) | Message Chains (Law of Demeter) | Hide Delegate | 129869    |
 | IMove / Move / Game | Inappropriate Intimacy (Cyclic Class Dependency) | Extract Interface | 129871    |

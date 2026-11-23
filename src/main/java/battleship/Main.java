@@ -22,31 +22,31 @@ public class Main
 		}
 		else{
 			int port = 4444;
-			List<String> aux = Arrays.stream(args).toList();
+			List<String> arguments = Arrays.stream(args).toList();
 			GameWindow gw = null;
 
             try {
-				boolean helpRequested = aux.contains("--help") || aux.contains("-h");
+				boolean helpRequested = arguments.contains("--help") || arguments.contains("-h");
 	            if (helpRequested){
 					printHelp();
 					return;
                 }
-				if (aux.contains("--gui")){
+				if (arguments.contains("--gui")){
 					gw = new GameWindow();
 					gw.start();
 				}
-                if(aux.contains("--port")) {
-	                port = Integer.parseInt(aux.get(aux.indexOf("--port") + 1));
+                if(arguments.contains("--port")) {
+	                port = Integer.parseInt(arguments.get(arguments.indexOf("--port") + 1));
 					if(port > 65535 || port < 1024) {
 						System.err.println("porta num range nao permitido!");
 						throw new IllegalStateException();
 					}
                 }
-                if (aux.contains("--server")){
+                if (arguments.contains("--server")){
 					final GameWindow GameWindowFinal = gw;
 					final int serverPort = port;
                     Server server = new Server();
-                    if(!aux.contains("--gui")){
+                    if(!arguments.contains("--gui")){
                         System.out.println("***  Battleship  ***");
 						Thread srvr = new Thread(() -> server.run(serverPort,GameWindowFinal,Tasks.game,true));
 						srvr.start();
