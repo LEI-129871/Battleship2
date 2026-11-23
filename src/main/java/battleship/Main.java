@@ -26,7 +26,8 @@ public class Main
 			GameWindow gw = null;
 
             try {
-                if (aux.contains("--help") || aux.contains("-h")){
+				boolean helpRequested = aux.contains("--help") || aux.contains("-h");
+	            if (helpRequested){
 					printHelp();
 					return;
                 }
