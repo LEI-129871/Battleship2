@@ -15,13 +15,14 @@ public class SoundPlayer {
                 thread.setDaemon(true);
                 return thread;
             });
+    public static final int SHOTS_PER_VOLLEY = 3;
 
     public static void playSound(String fileName) {
 
         audioQueue.submit(() -> {
+            String soundPath = "/sounds/" + fileName;
             try (InputStream sound =
-                         SoundPlayer.class.getResourceAsStream(
-                                 "/sounds/" + fileName)) {
+                         SoundPlayer.class.getResourceAsStream(soundPath)) {
 
                 if (sound == null) {
                     System.err.println("Som não encontrado: " + fileName);
@@ -49,7 +50,7 @@ public class SoundPlayer {
 
     public static void playVolley() {
         // Reproduzir três disparos consecutivos
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < SHOTS_PER_VOLLEY; i++) {
             playSound("Tiro.mp3");
         }
     }

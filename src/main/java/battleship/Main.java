@@ -22,46 +22,31 @@ public class Main
 		}
 		else{
 			int port = 4444;
-			List<String> aux = Arrays.stream(args).toList();
+			List<String> arguments = Arrays.stream(args).toList();
 			GameWindow gw = null;
 
             try {
-                if (aux.contains("--help") || aux.contains("-h")){
-                    System.out.println("""
-                        Uso: java -jar BattleshipGamePlayer-2.0.jar [OPÇÃO]...
-                
-                        Batalha naval dos Descobrimentos (BattleShip II).
-                        Sem opções, arranca o menu de consola.
-                
-                        Opções:
-                          --gui             abre a janela gráfica
-                          --server          arranca o servidor HTTP que recebe rajadas
-                          --port [1024-65535]  porta do servidor, 4444 default
-                          -h, --help        mostra esta ajuda e termina
-                
-                        Exemplos:
-                          java -jar BattleshipGamePlayer-2.0.jar
-                          java -jar BattleshipGamePlayer-2.0.jar --gui
-                          java -jar BattleshipGamePlayer-2.0.jar --gui --server
-                    """);
+				boolean helpRequested = arguments.contains("--help") || arguments.contains("-h");
+	            if (helpRequested){
+					printHelp();
 					return;
                 }
-				if (aux.contains("--gui")){
+				if (arguments.contains("--gui")){
 					gw = new GameWindow();
 					gw.start();
 				}
-                if(aux.contains("--port")) {
-	                port = Integer.parseInt(aux.get(aux.indexOf("--port") + 1));
+                if(arguments.contains("--port")) {
+	                port = Integer.parseInt(arguments.get(arguments.indexOf("--port") + 1));
 					if(port > 65535 || port < 1024) {
 						System.err.println("porta num range nao permitido!");
 						throw new IllegalStateException();
 					}
                 }
-                if (aux.contains("--server")){
+                if (arguments.contains("--server")){
 					final GameWindow GameWindowFinal = gw;
 					final int serverPort = port;
                     Server server = new Server();
-                    if(!aux.contains("--gui")){
+                    if(!arguments.contains("--gui")){
                         System.out.println("***  Battleship  ***");
 						Thread srvr = new Thread(() -> server.run(serverPort,GameWindowFinal,Tasks.game,true));
 						srvr.start();
@@ -83,4 +68,24 @@ public class Main
             }
         }
     }
+
+	private static void printHelp() {
+		System.out.println("""
+			Uso: java -jar BattleshipGamePlayer-2.0.jar [OPÇÃO]...
+	
+			Batalha naval dos Descobrimentos (BattleShip II).
+			Sem opções, arranca o menu de consola.
+	
+			Opções:
+			  --gui             abre a janela gráfica
+			  --server          arranca o servidor HTTP que recebe rajadas
+			  --port [1024-65535]  porta do servidor, 4444 default
+			  -h, --help        mostra esta ajuda e termina
+	
+			Exemplos:
+			  java -jar BattleshipGamePlayer-2.0.jar
+			  java -jar BattleshipGamePlayer-2.0.jar --gui
+			  java -jar BattleshipGamePlayer-2.0.jar --gui --server
+		""");
+	}
 }
