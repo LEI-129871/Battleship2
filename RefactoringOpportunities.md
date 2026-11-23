@@ -11,7 +11,7 @@
 | GameController::receiveShots() | Overly Complex Method (CC = 12) | Decompose Conditional | 129869    |
 | GameController::evaluateShots() | Message Chains (Law of Demeter) | Hide Delegate | 129869    |
 | Tasks::menu() | Overly Complex Method (CC = 19) | Extract Method | 129833    |
-| Main::main() | Overly Complex Method (CC = 12) | Extract Method | A definir |
+| Main::main() | Overly Complex Method (CC = 12) | Extract Method | 129833    |
 | Game (shoot(), stillFloating()) | Message Chains (Law of Demeter) | Move Instance Method | 129869    |
 | Server (add(), post(), shotsResult()) | Message Chains (Law of Demeter) | Hide Delegate | 129869    |
 | IMove / Move / Game | Inappropriate Intimacy (Cyclic Class Dependency) | Extract Interface | 129871    |

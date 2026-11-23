@@ -27,23 +27,7 @@ public class Main
 
             try {
                 if (aux.contains("--help") || aux.contains("-h")){
-                    System.out.println("""
-                        Uso: java -jar BattleshipGamePlayer-2.0.jar [OPÇÃO]...
-                
-                        Batalha naval dos Descobrimentos (BattleShip II).
-                        Sem opções, arranca o menu de consola.
-                
-                        Opções:
-                          --gui             abre a janela gráfica
-                          --server          arranca o servidor HTTP que recebe rajadas
-                          --port [1024-65535]  porta do servidor, 4444 default
-                          -h, --help        mostra esta ajuda e termina
-                
-                        Exemplos:
-                          java -jar BattleshipGamePlayer-2.0.jar
-                          java -jar BattleshipGamePlayer-2.0.jar --gui
-                          java -jar BattleshipGamePlayer-2.0.jar --gui --server
-                    """);
+					printHelp();
 					return;
                 }
 				if (aux.contains("--gui")){
@@ -83,4 +67,24 @@ public class Main
             }
         }
     }
+
+	private static void printHelp() {
+		System.out.println("""
+			Uso: java -jar BattleshipGamePlayer-2.0.jar [OPÇÃO]...
+	
+			Batalha naval dos Descobrimentos (BattleShip II).
+			Sem opções, arranca o menu de consola.
+	
+			Opções:
+			  --gui             abre a janela gráfica
+			  --server          arranca o servidor HTTP que recebe rajadas
+			  --port [1024-65535]  porta do servidor, 4444 default
+			  -h, --help        mostra esta ajuda e termina
+	
+			Exemplos:
+			  java -jar BattleshipGamePlayer-2.0.jar
+			  java -jar BattleshipGamePlayer-2.0.jar --gui
+			  java -jar BattleshipGamePlayer-2.0.jar --gui --server
+		""");
+	}
 }
