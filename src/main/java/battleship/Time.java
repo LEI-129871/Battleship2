@@ -24,7 +24,7 @@ public class Time extends Thread{
         double time = sec - sw.getTime(TimeUnit.SECONDS);
         if(time <= 0){
             String[] opcoes = {"Fechar"};
-            int escolha = JOptionPane.showOptionDialog(j,
+            JOptionPane.showOptionDialog(j,
                     "fosses mais rapido AHAHAHAH", "És dos lentos tu",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
                     null, opcoes, opcoes[0]);
