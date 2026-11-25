@@ -4,7 +4,6 @@
 |---|---|---|-----------|
 | AiShotStrategy::computeShots() | Overly Complex Method (CC = 19) | Extract Method | 129871    |
 | GameWindow::addComponentsMenu() | Overly Complex Method (CC = 14) | Extract Method | 129871    |
-| GameWindow (linhas 188-195, 252-263, 350-361) | Duplicated Code | Extract Method | A definir |
 | GameWindow::updateBoard() | Overly Complex Method (CC = 12) | Extract Method | 129869    |
 | Move::processEnemyFire() | Overly Complex Method (CC = 36) | Extract Method | 129869    |
 | Move::processEnemyFire() | Message Chains (Law of Demeter: getCategory()) | Hide Delegate | 129871    |
